@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">SkinDiseaseDetector</string>
+    <string name="on_submit_msg">Check out your Inbox, you will receive an email containing link where you can reset your password</string>
+    <string name="default_web_client_id">391889693828-3bm58daumnfbtebt2hags6se8h3klhnr.apps.googleusercontent.com</string>
+</resources>

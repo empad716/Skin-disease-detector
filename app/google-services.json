@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "391889693828",
+    "project_id": "skin-disease-detector-1939c",
+    "storage_bucket": "skin-disease-detector-1939c.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:391889693828:android:968745c19964dd112826d1",
+        "android_client_info": {
+          "package_name": "com.example.skindiseasedetector"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "391889693828-ouof9oj2q6ulrfm6ap3v59d2e9jkosi1.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.skindiseasedetector",
+            "certificate_hash": "dac93cdbd1d778cc51f5daa7ea708740f8386baf"
+          }
+        },
+        {
+          "client_id": "391889693828-3bm58daumnfbtebt2hags6se8h3klhnr.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBRaIQ-MpLsCYhLS6b6qplMW-oZw_cVG-w"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "391889693828-3bm58daumnfbtebt2hags6se8h3klhnr.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
