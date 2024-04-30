@@ -3,6 +3,7 @@ package com.example.skindiseasedetector
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.widget.Button
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.ActivityResult
@@ -10,7 +11,6 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
-import com.example.skindiseasedetector.databinding.ActivityHomeBinding
 import com.example.skindiseasedetector.databinding.ActivityLoginSelectionBinding
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
@@ -44,6 +44,7 @@ class LoginSelectionActivity : BaseActivity() {
             .build()
         googleSignInClient = GoogleSignIn.getClient(this, gso)
 
+
         button.setOnClickListener {
             val intent = Intent(this, SignInActivity ::class.java)
             startActivity(intent)
@@ -57,6 +58,22 @@ class LoginSelectionActivity : BaseActivity() {
             startActivity(Intent(this,HomeActivity::class.java))
             finish()
         }
+
+        binding?.anonSignIn?.setOnClickListener{
+            anonymousAuth()
+        }
+    }
+
+    private fun anonymousAuth() {
+        showProgressBar()
+        auth.signInAnonymously()
+            .addOnSuccessListener {
+                startActivity(Intent(this,AnonHomeActivity::class.java))
+                hideProgressBar()
+            }
+            .addOnFailureListener{
+                Log.d("TAG","anonymousAuth: $it")
+            }
     }
 
     private fun signInWithGoogle(){
@@ -106,6 +123,8 @@ class LoginSelectionActivity : BaseActivity() {
             }
         }
     }
+
+
 
 
 }

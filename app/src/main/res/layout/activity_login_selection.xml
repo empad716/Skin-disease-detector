@@ -45,7 +45,7 @@
         app:layout_constraintVertical_bias="0.499" />
 
     <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/facebookSignIn"
+        android:id="@+id/anonSignIn"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="16dp"
