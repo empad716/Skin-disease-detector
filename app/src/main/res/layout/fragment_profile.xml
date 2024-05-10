@@ -17,19 +17,20 @@
         android:id="@+id/signOutBtn"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginHorizontal="16dp"
         android:layout_marginTop="650dp"
-        android:backgroundTint="@color/black"
+        android:backgroundTint="@color/white"
         android:text="Sign Out"
-        android:textColor="@color/white"
+        android:textColor="@color/black"
         android:textStyle="bold" />
 
     <TextView
         android:id="@+id/textViewName"
-        android:layout_width="wrap_content"
+        android:layout_width="245dp"
         android:layout_height="wrap_content"
-        android:text="TextView"
+        android:layout_marginHorizontal="100dp"
         android:layout_marginTop="500dp"
-        android:layout_marginHorizontal="140dp"
+        android:text="TextView"
         android:textSize="30dp"
 
 

@@ -1,6 +1,7 @@
 package com.example.skindiseasedetector
 
 
+import android.app.AlertDialog
 import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -23,11 +24,11 @@ import com.google.firebase.database.ValueEventListener
 
 class ProfileFragment : Fragment() {
     private lateinit var auth: FirebaseAuth
-    private lateinit var currentUser: FirebaseUser
     private lateinit var button: Button
     private lateinit var databaseReference: DatabaseReference
     private lateinit var users: Users
     private lateinit var uid: String
+    private lateinit var builder: AlertDialog.Builder
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -36,6 +37,7 @@ class ProfileFragment : Fragment() {
         val view = inflater.inflate(R.layout.fragment_profile, container, false)
         button = view.findViewById(R.id.signOutBtn)
 
+
         auth = Firebase.auth
         uid = auth.currentUser?.uid.toString()
         databaseReference = FirebaseDatabase.getInstance().getReference("users")
@@ -43,10 +45,20 @@ class ProfileFragment : Fragment() {
             getUserData()
         }
         button.setOnClickListener {
-            if (auth.currentUser!=null){
-                auth.signOut()
-                startActivity(Intent(activity,LoginSelectionActivity::class.java))
+            builder = AlertDialog.Builder(activity)
+            builder.setTitle("Sign Out")
+            builder.setMessage("Are you sure you want to sign out?")
+            builder.setCancelable(true)
+            builder.setPositiveButton("YES"){dialog,id->
+                if (auth.currentUser!=null){
+                   auth.signOut()
+                 startActivity(Intent(activity,LoginSelectionActivity::class.java))
+                }
             }
+            builder.setNegativeButton("NO"){dialog,id->
+                dialog.cancel()
+            }
+            builder.create().show()
         }
         return view
     }

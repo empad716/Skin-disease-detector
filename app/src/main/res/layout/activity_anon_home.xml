@@ -8,20 +8,21 @@
     android:background="#DD87E3"
     tools:context=".AnonHomeActivity">
 
+
     <com.google.android.material.button.MaterialButton
         android:id="@+id/signOutBtn"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:backgroundTint="@color/black"
+        android:layout_marginHorizontal="16dp"
         android:text="Sign Out"
-        android:textColor="@color/white"
+        android:textColor="@color/black"
         android:textStyle="bold"
+        app:backgroundTint="@color/white"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.612" />
+        app:layout_constraintVertical_bias="0.72" />
 
     <TextView
         android:id="@+id/textViewAnon"

@@ -36,6 +36,7 @@ android {
     }
     buildFeatures{
         viewBinding = true
+        mlModelBinding = true
     }
 }
 
@@ -51,6 +52,9 @@ dependencies {
     implementation("com.google.android.gms:play-services-auth:20.5.0")
     implementation(libs.firebase.database)
     implementation(libs.firebase.database.ktx)
+    implementation(libs.tensorflow.lite.support)
+    implementation(libs.tensorflow.lite.metadata)
+    implementation(libs.play.services.tflite.acceleration.service)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

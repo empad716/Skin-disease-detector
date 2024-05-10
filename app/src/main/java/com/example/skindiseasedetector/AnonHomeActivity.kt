@@ -1,5 +1,6 @@
 package com.example.skindiseasedetector
 
+import android.app.AlertDialog
 import android.content.Intent
 import android.os.Bundle
 import android.widget.TextView
@@ -14,6 +15,7 @@ import com.google.firebase.auth.auth
 
 class AnonHomeActivity : BaseActivity() {
     private lateinit var auth: FirebaseAuth
+    private lateinit var builder: AlertDialog.Builder
     private var binding: ActivityAnonHomeBinding? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -24,12 +26,21 @@ class AnonHomeActivity : BaseActivity() {
         findViewById<TextView>(R.id.textViewAnon).text = auth.currentUser?.uid
         binding?.signOutBtn?.setOnClickListener{
             showProgressBar()
-            if (auth.currentUser!=null){
-                auth.signOut()
-                startActivity(Intent(this,LoginSelectionActivity::class.java))
-                finish()
-                hideProgressBar()
+            builder = AlertDialog.Builder(this)
+            builder.setTitle("Sign Out")
+            builder.setMessage("Are you sure you want to sign out?")
+            builder.setCancelable(true)
+            builder.setPositiveButton("YES"){dialog,id->
+                if (auth.currentUser!=null){
+                    auth.signOut()
+                    startActivity(Intent(this,LoginSelectionActivity::class.java))
+                    hideProgressBar()
+                }
             }
+            builder.setNegativeButton("NO"){dialog,id->
+                dialog.cancel()
+            }
+            builder.create().show()
         }
     }
 }
