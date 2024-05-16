@@ -5,6 +5,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.widget.Button
+import androidx.activity.OnBackPressedCallback
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
 import com.example.skindiseasedetector.databinding.ActivityLoginSelectionBinding
@@ -31,6 +32,11 @@ class LoginSelectionActivity : BaseActivity() {
         enableEdgeToEdge()
         binding = ActivityLoginSelectionBinding.inflate(layoutInflater)
         setContentView(binding?.root)
+        onBackPressedDispatcher.addCallback(this,object : OnBackPressedCallback(true){
+            override fun handleOnBackPressed() {
+            }
+
+        })
          button = findViewById(R.id.emailSignIn)
         auth = Firebase.auth
         database = Firebase.database

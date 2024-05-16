@@ -1,12 +1,14 @@
 package com.example.skindiseasedetector
 
 import android.Manifest
+import android.app.AlertDialog
 import android.app.Dialog
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
+import android.media.ThumbnailUtils
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
@@ -14,12 +16,10 @@ import android.view.Gravity
 import android.view.ViewGroup
 import android.view.Window
 import android.widget.LinearLayout
+import androidx.activity.OnBackPressedCallback
 import androidx.activity.enableEdgeToEdge
-import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.example.skindiseasedetector.databinding.ActivityHomeBinding
-import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.auth
@@ -28,7 +28,7 @@ import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
-
+import java.io.IOException
 
 
 class HomeActivity : BaseActivity() {
@@ -37,10 +37,8 @@ class HomeActivity : BaseActivity() {
     private lateinit var users: Users
     private lateinit var uid: String
     private var binding:ActivityHomeBinding? = null
-    private lateinit var bottomNavigationView: BottomNavigationView
-    private val REQUEST_IMAGE_CAPTURE = 1
-    private val REQUEST_IMAGE_PICK = 2
-    private val REQUEST_PERMISSION = 100
+    private var image: Bitmap? = null
+    private lateinit var builder: AlertDialog.Builder
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -50,28 +48,26 @@ class HomeActivity : BaseActivity() {
         uid = auth.currentUser?.uid.toString()
         databaseReference = FirebaseDatabase.getInstance().getReference("users")
 
-
-        if (ContextCompat.checkSelfPermission(
-                this,
-                Manifest.permission.CAMERA
-            ) != PackageManager.PERMISSION_GRANTED ||
-            ContextCompat.checkSelfPermission(
-                this,
-                Manifest.permission.WRITE_EXTERNAL_STORAGE
-            ) != PackageManager.PERMISSION_GRANTED
-        ) {
-            ActivityCompat.requestPermissions(
-                this,
-                arrayOf(
-                    Manifest.permission.CAMERA,
-                    Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                    Manifest.permission.READ_EXTERNAL_STORAGE
-                ),
-                REQUEST_PERMISSION
-            )
-        }
-
-
+        onBackPressedDispatcher.addCallback(this,object : OnBackPressedCallback(true){
+            override fun handleOnBackPressed() {
+                showProgressBar()
+                builder = AlertDialog.Builder(this@HomeActivity)
+                builder.setTitle("Sign Out")
+                builder.setMessage("Are you sure you want to Sign Out?")
+                builder.setCancelable(true)
+                builder.setPositiveButton("YES"){dialog,id->
+                    if (auth.currentUser!=null){
+                        auth.signOut()
+                        startActivity(Intent(this@HomeActivity,LoginSelectionActivity::class.java))
+                        hideProgressBar()
+                    }
+                }
+                builder.setNegativeButton("NO"){dialog,id->
+                    dialog.cancel()
+                }
+                builder.create().show()
+            }
+        })
 
         if(uid.isNotEmpty()){
            getUserData()
@@ -98,7 +94,7 @@ class HomeActivity : BaseActivity() {
                     true
                 }
                 R.id.btn_add ->{
-                    startActivity(Intent(this, UploadActivity::class.java))
+                    showDialog()
                     true
                 }
                 R.id.btn_history ->{
@@ -147,54 +143,52 @@ class HomeActivity : BaseActivity() {
 
     private fun openGallery() {
         val pickImageIntent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
-        pickImageIntent.type = "image/*"
-        startActivityForResult(pickImageIntent, REQUEST_IMAGE_PICK)
-
-
+        startActivityForResult(pickImageIntent,1)
     }
-
-
-
     private fun openCamera() {
-        Intent(MediaStore.ACTION_IMAGE_CAPTURE).also { takePictureIntent ->
-            takePictureIntent.resolveActivity(packageManager)?.also {
-                startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE)
-            }
+        if (checkSelfPermission(Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED){
+            val cameraIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+            startActivityForResult(cameraIntent,3)
+        }
+        else{
+            requestPermissions(arrayOf(Manifest.permission.CAMERA),100)
         }
 
     }
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
 
         if (resultCode == RESULT_OK) {
-            when (requestCode) {
-                REQUEST_IMAGE_CAPTURE -> {
-                    val imageBitmap = data?.extras?.get("data") as Bitmap
-                        navigateToImageDisplayActivityA(imageBitmap)
+            if (requestCode ==3){
+                var image = data?.extras?.get("data") as Bitmap
+                val dimension:Int = Math.min(image.width,image.height)
+                image = ThumbnailUtils.extractThumbnail(image ,dimension,dimension)
+                navigateToImageDisplayActivity(image)
+               // image = Bitmap.createScaledBitmap(image,imageSize,imageSize,false)
+                //classifyImage(image)
+            }else{
+                val dat: Uri? = data!!.data
+                try {
+                    image = MediaStore.Images.Media.getBitmap(this.contentResolver, dat)
 
+                }catch (e:IOException){
+                    e.printStackTrace()
                 }
-                REQUEST_IMAGE_PICK -> {
-                    val imageUri: Uri? = data?.data
-                    imageUri?.let {
-                        navigateToImageDisplayActivity(it)
-                    }
-                }
+                image?.let { navigateToImageDisplayActivity(it) }
+               // image = image?.let { Bitmap.createScaledBitmap(it, imageSize,imageSize,false) }
+                //classifyImage(image)
             }
+
         }
+        super.onActivityResult(requestCode, resultCode, data)
     }
-    private fun navigateToImageDisplayActivity(imageUri: Uri) {
-        val intent = Intent(this, UploadActivity::class.java).apply {
-            putExtra("imageUri", imageUri.toString())
-        }
-        startActivity(intent)
-    }
-    private fun navigateToImageDisplayActivityA(imageBitmap: Bitmap) {
-        val intent = Intent(this, UploadActivity::class.java).apply {
+    private fun navigateToImageDisplayActivity(imageBitmap: Bitmap) {
+        showProgressBar()
+        val intent = Intent(this, DetectActivity::class.java).apply {
             putExtra("imageBitmap", imageBitmap)
         }
         startActivity(intent)
+        hideProgressBar()
     }
-
     private fun getUserData() {
         databaseReference.child(uid).addValueEventListener(object : ValueEventListener{
             override fun onDataChange(snapshot: DataSnapshot) {
@@ -209,7 +203,6 @@ class HomeActivity : BaseActivity() {
 
         })
     }
-
     private fun replaceFragment(fragment: Fragment){
         val user = FirebaseAuth.getInstance().currentUser
         val bundle = Bundle()
@@ -217,5 +210,7 @@ class HomeActivity : BaseActivity() {
         fragment.arguments =bundle
         supportFragmentManager.beginTransaction().replace(R.id.frame_container,fragment).commit()
     }
+
+
 
 }

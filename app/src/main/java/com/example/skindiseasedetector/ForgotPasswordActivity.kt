@@ -29,10 +29,6 @@ class ForgotPasswordActivity : BaseActivity() {
             resetPassword()
         }
 
-        button = findViewById(R.id.cancelBtn)
-        button.setOnClickListener {
-            startActivity(Intent(this,SignInActivity::class.java))
-        }
 
     }
 

@@ -3,14 +3,14 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ProfileFragment">
+    tools:context=".AnonProfileFragment">
 
     <!-- TODO: Update blank fragment layout -->
     <TextView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:gravity="center"
-        android:text="PROFILE"
+        android:text="AnonPROFILE"
         android:textSize="30sp" />
 
     <com.google.android.material.button.MaterialButton
@@ -25,14 +25,13 @@
         android:textStyle="bold" />
 
     <TextView
-        android:id="@+id/textViewName"
+        android:id="@+id/textViewAnon"
         android:layout_width="245dp"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="100dp"
         android:layout_marginTop="500dp"
         android:text=""
-        android:textSize="30dp"
+        android:textSize="30dp"/>
 
 
-        />
 </FrameLayout>

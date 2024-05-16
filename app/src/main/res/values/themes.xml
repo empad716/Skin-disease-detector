@@ -16,4 +16,10 @@
         <item name="android:windowExitAnimation">@anim/slide_out_bottom</item>
 
     </style>
+    <style name="Theme.App.SplashScreen" parent="Theme.SplashScreen">
+        <item name="windowSplashScreenBackground">@color/pink</item>
+        <item name="windowSplashScreenAnimatedIcon">@drawable/camera_enhance</item>
+        <item name="postSplashScreenTheme">@style/Base.Theme.SkinDiseaseDetector</item>
+    </style>
+
 </resources>

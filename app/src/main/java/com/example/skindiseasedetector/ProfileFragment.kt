@@ -36,8 +36,6 @@ class ProfileFragment : Fragment() {
     ): View? {
         val view = inflater.inflate(R.layout.fragment_profile, container, false)
         button = view.findViewById(R.id.signOutBtn)
-
-
         auth = Firebase.auth
         uid = auth.currentUser?.uid.toString()
         databaseReference = FirebaseDatabase.getInstance().getReference("users")

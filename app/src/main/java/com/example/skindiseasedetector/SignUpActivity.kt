@@ -88,6 +88,10 @@ class SignUpActivity : BaseActivity() {
                 binding?.passwordLayout?.error = "Enter Password"
                 false
             }
+            (pass.length <=  8)->{
+                binding?.passwordLayout?.error = "Password should be 8 Characters"
+                false
+            }
             TextUtils.isEmpty(retypePass)->{
                 binding?.RetypePasswordLayout?.error = "Enter Confirm Password"
                 false
@@ -96,6 +100,7 @@ class SignUpActivity : BaseActivity() {
                 binding?.RetypePasswordLayout?.error = "Password does not match"
                 false
             }
+
             else->{true}
         }
     }
