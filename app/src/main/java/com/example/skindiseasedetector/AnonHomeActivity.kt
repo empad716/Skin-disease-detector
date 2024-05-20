@@ -78,7 +78,7 @@ class AnonHomeActivity : BaseActivity() {
                     true
                 }
                 R.id.btn_maps ->{
-                    replaceFragment(AnonMapsFragment())
+                    replaceFragment(AnonMapsFragments())
                     true
                 }
                 R.id.btn_add ->{

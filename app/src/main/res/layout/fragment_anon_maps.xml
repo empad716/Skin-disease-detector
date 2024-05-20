@@ -1,16 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".AnonMapsFragment">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
+    <com.mapbox.maps.MapView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="AnonMaps"
-        android:gravity="center"
-        android:textSize="20dp"/>
+        android:layout_alignParentBottom="true"
+        android:layout_height="830dp"
+        android:id="@+id/mapView"/>
 
-</FrameLayout>
+
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginRight="16sp"
+        android:layout_marginBottom="120sp"
+        android:src="@drawable/my_location"
+        android:id="@+id/focusLocation"/>
+</RelativeLayout>

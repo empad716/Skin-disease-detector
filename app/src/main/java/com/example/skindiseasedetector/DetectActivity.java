@@ -15,6 +15,8 @@ import android.widget.TextView;
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.content.res.AppCompatResources;
+
 import com.example.skindiseasedetector.databinding.ActivityDetectBinding;
 import com.example.skindiseasedetector.ml.Model;
 import org.tensorflow.lite.DataType;
@@ -54,7 +56,6 @@ public class DetectActivity extends BaseActivity {
                 saveIntent();
             }
         });
-
       //  camera.setOnClickListener(new View.OnClickListener() {
         //    @Override
           //  public void onClick(View view) {
