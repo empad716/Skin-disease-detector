@@ -155,7 +155,7 @@ public class DetectActivity extends BaseActivity {
                     maxPos = i;
                 }
             }
-            String[] classes = {"Acne", "Eczema","Healthy Skin","Melanocytic Nevi","Melanoma","Psoriasis"};
+            String[] classes = {"Acne", "Eczema","Melanocytic Nevi","Melanoma","Normal Skin","Psoriasis"};
             result.setText(classes[maxPos]);
 
             // Releases model resources if no longer used.
