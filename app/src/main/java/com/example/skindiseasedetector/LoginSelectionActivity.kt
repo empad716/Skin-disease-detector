@@ -50,6 +50,7 @@ class LoginSelectionActivity : BaseActivity() {
         button.setOnClickListener {
             val intent = Intent(this, SignInActivity ::class.java)
             startActivity(intent)
+            overridePendingTransition(R.anim.slide_in_right,R.anim.slide_out_left)
         }
         binding?.googleSignIn?.setOnClickListener {
             signInWithGoogle()

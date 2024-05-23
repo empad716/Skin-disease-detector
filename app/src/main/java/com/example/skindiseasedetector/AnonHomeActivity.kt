@@ -52,13 +52,16 @@ class AnonHomeActivity : BaseActivity() {
                     if (auth.currentUser!=null){
                         auth.signOut()
                         startActivity(Intent(this@AnonHomeActivity,LoginSelectionActivity::class.java))
+                        overridePendingTransition(R.anim.slide_in_left,R.anim.slide_out_right)
                         hideProgressBar()
                     }
                 }
                 builder.setNegativeButton("NO"){dialog,id->
                     dialog.cancel()
+                    hideProgressBar()
                 }
                 builder.create().show()
+                hideProgressBar()
             }
         })
         binding?.signOutBtn?.setOnClickListener{
@@ -78,7 +81,7 @@ class AnonHomeActivity : BaseActivity() {
                     true
                 }
                 R.id.btn_maps ->{
-                    replaceFragment(AnonMapsFragments())
+                    replaceFragment(MapsFragment())
                     true
                 }
                 R.id.btn_add ->{

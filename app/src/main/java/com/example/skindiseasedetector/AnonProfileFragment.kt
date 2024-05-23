@@ -39,6 +39,7 @@ class AnonProfileFragment : Fragment() {
                 if (auth.currentUser!=null){
                     auth.signOut()
                     startActivity(Intent(activity,LoginSelectionActivity::class.java))
+                    activity?.overridePendingTransition(R.anim.slide_in_left,R.anim.slide_out_right)
                 }
             }
             builder.setNegativeButton("NO"){dialog,id->

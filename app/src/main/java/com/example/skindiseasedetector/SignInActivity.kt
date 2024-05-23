@@ -24,10 +24,12 @@ class SignInActivity : BaseActivity() {
         auth = Firebase.auth
         binding?.textViewNR?.setOnClickListener {
          startActivity(Intent(this, SignUpActivity::class.java))
+            overridePendingTransition(R.anim.slide_in_right,R.anim.slide_out_left)
             finish()
         }
         binding?.textViewForgotPass?.setOnClickListener {
             startActivity(Intent(this,ForgotPasswordActivity::class.java))
+            overridePendingTransition(R.anim.slide_in_right,R.anim.slide_out_left)
         }
         binding?.btnSignIn?.setOnClickListener {
             signInUser()

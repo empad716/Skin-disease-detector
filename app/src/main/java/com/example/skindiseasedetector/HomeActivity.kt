@@ -59,13 +59,16 @@ class HomeActivity : BaseActivity() {
                     if (auth.currentUser!=null){
                         auth.signOut()
                         startActivity(Intent(this@HomeActivity,LoginSelectionActivity::class.java))
+                        overridePendingTransition(R.anim.slide_in_left,R.anim.slide_out_right)
                         hideProgressBar()
                     }
                 }
                 builder.setNegativeButton("NO"){dialog,id->
                     dialog.cancel()
+                    hideProgressBar()
                 }
                 builder.create().show()
+                hideProgressBar()
             }
         })
 

@@ -3,7 +3,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".MapsFragment">
 
     <com.mapbox.maps.MapView
@@ -12,7 +11,13 @@
         android:layout_height="830dp"
         android:id="@+id/mapView"/>
 
-
+    <Button
+        android:layout_width="250dp"
+        android:layout_height="wrap_content"
+        android:text="Search Nearby Derma Clinic"
+        android:id="@+id/searchNearby"
+        android:layout_marginTop="80dp"
+        android:layout_marginLeft="80dp"/>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:layout_width="wrap_content"
@@ -22,7 +27,7 @@
         android:layout_marginRight="16sp"
         android:layout_marginBottom="120sp"
         android:src="@drawable/my_location"
-        android:id="@+id/focusLocation"/>
-
+        android:id="@+id/focusLocation"
+        android:background="@color/white"/>
 
 </RelativeLayout>

@@ -4,6 +4,7 @@ import  android.content.Intent
 import android.os.Bundle
 import android.text.TextUtils
 import android.util.Patterns
+import androidx.activity.OnBackPressedCallback
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
@@ -30,9 +31,11 @@ class SignUpActivity : BaseActivity() {
 
         binding?.textViewAR?.setOnClickListener {
             startActivity(Intent(this, SignInActivity::class.java))
+          overridePendingTransition(R.anim.slide_in_left,R.anim.slide_out_right)
             finish()
         }
         binding?.btnSignUp?.setOnClickListener { registerUser() }
+
     }
 
 
