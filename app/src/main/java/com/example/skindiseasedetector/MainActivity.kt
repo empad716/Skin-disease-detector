@@ -9,6 +9,8 @@ import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.example.skindiseasedetector.databinding.ActivityMainBinding
+import com.google.firebase.Firebase
+import com.google.firebase.auth.auth
 
 class MainActivity : AppCompatActivity() {
 
@@ -27,6 +29,11 @@ class MainActivity : AppCompatActivity() {
         }
         binding?.skip?.setOnClickListener{
             startActivity(Intent(this, LoginSelectionActivity::class.java))
+        }
+        val auth = Firebase.auth
+        if(auth.currentUser != null){
+            startActivity(Intent(this,HomeActivity::class.java))
+            finish()
         }
     }
 }

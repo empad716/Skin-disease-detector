@@ -41,8 +41,9 @@ public class AnonDetectActivity extends BaseActivity {
 
         Bitmap image = getIntent().getParcelableExtra("imageBitmap");
         imageView.setImageBitmap(image);
-        image = Bitmap.createScaledBitmap(image,imageSize,imageSize,false);
+        image = Bitmap.createScaledBitmap(image, imageSize, imageSize, false);
         classifyImage(image);
+
 
         binding.cancel.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -68,7 +69,7 @@ public class AnonDetectActivity extends BaseActivity {
             int[] intValues = new int[imageSize * imageSize];
             image.getPixels(intValues, 0, image.getWidth(), 0, 0, image.getWidth(), image.getHeight());
             int pixel = 0;
-            //iterate over each pixel and extract R, G, and B values. Add those values individually to the byte buffer.
+
             for(int i = 0; i < imageSize; i ++){
                 for(int j = 0; j < imageSize; j++){
                     int val = intValues[pixel++]; // RGB
@@ -85,7 +86,7 @@ public class AnonDetectActivity extends BaseActivity {
             TensorBuffer outputFeature0 = outputs.getOutputFeature0AsTensorBuffer();
 
             float[] confidences = outputFeature0.getFloatArray();
-            // find the index of the class with the biggest confidence.
+
             int maxPos = 0;
             float maxConfidence = 0;
             for (int i = 0; i < confidences.length; i++) {
@@ -94,7 +95,7 @@ public class AnonDetectActivity extends BaseActivity {
                     maxPos = i;
                 }
             }
-            String[] classes = {"Acne", "Eczema","Melanocytic Nevi","Melanoma","Psoriasis"};
+            String[] classes = {"Acne", "Eczema","Melanocytic Nevi","Melanoma","Normal Skin","Psoriasis"};
             result.setText(classes[maxPos]);
 
             // Releases model resources if no longer used.

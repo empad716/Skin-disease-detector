@@ -23,7 +23,7 @@ import com.google.firebase.database.database
 
 class LoginSelectionActivity : BaseActivity() {
     private var binding:ActivityLoginSelectionBinding? = null
-    private lateinit var button: Button
+
     private lateinit var auth :FirebaseAuth
     private lateinit var database: FirebaseDatabase
     private lateinit var googleSignInClient :GoogleSignInClient
@@ -37,7 +37,7 @@ class LoginSelectionActivity : BaseActivity() {
             }
 
         })
-         button = findViewById(R.id.emailSignIn)
+
         auth = Firebase.auth
         database = Firebase.database
         val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
@@ -47,7 +47,7 @@ class LoginSelectionActivity : BaseActivity() {
         googleSignInClient = GoogleSignIn.getClient(this, gso)
 
 
-        button.setOnClickListener {
+        binding?.emailSignIn?.setOnClickListener {
             val intent = Intent(this, SignInActivity ::class.java)
             startActivity(intent)
             overridePendingTransition(R.anim.slide_in_right,R.anim.slide_out_left)

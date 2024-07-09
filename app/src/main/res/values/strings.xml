@@ -4,5 +4,10 @@
     <string name="default_web_client_id">391889693828-3bm58daumnfbtebt2hags6se8h3klhnr.apps.googleusercontent.com</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="normal_skin_cause">Normal Skin C</string>
+    <string name="normal_skin_symptoms">Normal Skin S</string>
+    <string name="normal_skin_treatment">Normal Skin T</string>
+    <string name="melanoma_cause">melanoma nga to</string>
+    <string name="failed">Something Went Wrong</string>
     <string name="mapbox_access_token">sk.eyJ1Ijoic2RkMDEwMSIsImEiOiJjbHdmNzk5bjIxbTMyMmpwbHUzOW84eGl4In0.Y43KC05rDExaeylI9UAf2g</string>
 </resources>

@@ -52,7 +52,6 @@ class SignUpActivity : BaseActivity() {
                         if (task.isSuccessful){
                             val databaseRef = database.reference.child("users").child(auth.currentUser!!.uid)
                             val users :Users= Users(name,email,auth.currentUser!!.uid)
-
                             databaseRef.setValue(users)
                                 .addOnCompleteListener {task->
                                 if (task.isSuccessful){

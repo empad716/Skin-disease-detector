@@ -167,18 +167,18 @@ class HomeActivity : BaseActivity() {
                 image = ThumbnailUtils.extractThumbnail(image ,dimension,dimension)
                 navigateToImageDisplayActivity(image)
                // image = Bitmap.createScaledBitmap(image,imageSize,imageSize,false)
-                //classifyImage(image)
+
             }else{
-                val dat: Uri? = data!!.data
+                val data: Uri? = data!!.data
                 try {
-                    image = MediaStore.Images.Media.getBitmap(this.contentResolver, dat)
+                    image = MediaStore.Images.Media.getBitmap(this.contentResolver, data)
 
                 }catch (e:IOException){
                     e.printStackTrace()
                 }
                 image?.let { navigateToImageDisplayActivity(it) }
                // image = image?.let { Bitmap.createScaledBitmap(it, imageSize,imageSize,false) }
-                //classifyImage(image)
+
             }
 
         }
