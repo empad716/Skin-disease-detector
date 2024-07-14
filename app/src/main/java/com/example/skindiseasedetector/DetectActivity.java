@@ -1,6 +1,7 @@
 package com.example.skindiseasedetector;
 
 import android.Manifest;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -8,6 +9,7 @@ import android.media.ThumbnailUtils;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -22,9 +24,16 @@ import com.google.firebase.Firebase;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
 import org.tensorflow.lite.DataType;
 import org.tensorflow.lite.support.tensorbuffer.TensorBuffer;
+
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
@@ -37,8 +46,9 @@ public class DetectActivity extends BaseActivity {
     int imageSize = 128;
     ActivityDetectBinding binding = null;
     FirebaseAuth auth;
-    String uid;
-    DatabaseReference databaseReference;
+    String uid,dateTime;
+
+
     FirebaseDatabase database;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,7 +61,7 @@ public class DetectActivity extends BaseActivity {
         auth = FirebaseAuth.getInstance();
         database = FirebaseDatabase.getInstance();
         uid = auth.getCurrentUser().getUid();
-        binding.textViewName.setText(uid);
+
         LocalDateTime currentDateTime = LocalDateTime.now();
         DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("hh:mm:ss a");
@@ -63,6 +73,10 @@ public class DetectActivity extends BaseActivity {
         imageView.setImageBitmap(image);
         image = Bitmap.createScaledBitmap(image,imageSize,imageSize,false);
         classifyImage(image);
+
+
+
+
 
 
 
@@ -109,8 +123,52 @@ public class DetectActivity extends BaseActivity {
 
             }
         });
+       // uploadImage(image);
 
     }
+
+   // private void uploadImage(Bitmap bitmap) {
+
+
+     //   ByteArrayOutputStream baos = new ByteArrayOutputStream();
+     //   bitmap.compress(Bitmap.CompressFormat.JPEG,100,baos);
+    //    byte[] data = baos.toByteArray();
+
+   //     FirebaseStorage storage = FirebaseStorage.getInstance();
+  //      StorageReference storageRef = storage.getReference();
+   //     StorageReference imageRef= storageRef.child("images/"+uid+"/"+ dateTime+".jpg");
+//
+    //    UploadTask uploadTask= imageRef.putBytes(data);
+    //    uploadTask.addOnSuccessListener(taskSnapshot -> {
+   //        imageRef.getDownloadUrl().addOnSuccessListener(uri -> {
+    //            String downloadUrl = uri.toString();
+    //            Log.d("FirebaseStorage","Download URL:" +downloadUrl);
+    //            saveImageUrl(downloadUrl,dateTime,uid);
+
+    //        });
+     //   }).addOnFailureListener(exception ->{
+    //        Log.e("Firebase","Upload Failed", exception);
+    //    });
+
+ //   }
+
+    // private void saveImageUrl(String imageUrl,String dateTime, String uid ) {
+      //  DatabaseReference myRef = database.getReference();
+      //  DatabaseReference databaseRef = database.getReference()
+        //        .child("users")
+       //         .child(uid)
+      //          .child("history")
+      //          .child(dateTime);
+
+     //   databaseRef.setValue(imageUrl).addOnCompleteListener(task -> {
+     //       if (task.isSuccessful()){
+    //            Log.d("RealtimeDatabase","Image URl saved successfully");
+    //        }else {
+    //            Log.e("RealtimeDatabase","Failed to save image",task.getException());
+    //        }
+   //     });
+
+  //  }
 
 
     private void saveIntent() {

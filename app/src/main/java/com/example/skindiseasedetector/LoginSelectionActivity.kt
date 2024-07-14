@@ -4,7 +4,6 @@ import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
-import android.widget.Button
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
@@ -18,7 +17,10 @@ import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.auth.auth
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.database
 
 class LoginSelectionActivity : BaseActivity() {
@@ -106,27 +108,48 @@ class LoginSelectionActivity : BaseActivity() {
     private fun updateUI(account: GoogleSignInAccount) {
         showProgressBar()
         val credential = GoogleAuthProvider.getCredential(account.idToken,null)
-        auth.signInWithCredential(credential).addOnCompleteListener {
-            if (it.isSuccessful){
-                val databaseRef = database.reference.child("users").child(auth.currentUser!!.uid)
-                val users :Users= Users(auth.currentUser!!.displayName,auth.currentUser!!.email,auth.currentUser!!.uid)
-                databaseRef.setValue(users)
-                    .addOnCompleteListener {
-                        if (it.isSuccessful){
-                            startActivity(Intent(this,HomeActivity::class.java))
-                            finish()
+
+        val usersRef = FirebaseDatabase.getInstance().getReference("users")
+        val intent = Intent(this,HomeActivity::class.java)
+        auth.signInWithCredential(credential).addOnCompleteListener{task ->
+            if (task.isSuccessful){
+                val userID =auth.currentUser!!.uid
+                val databaseRefe = database.reference.child("users").child(userID)
+
+                databaseRefe.addListenerForSingleValueEvent(object :ValueEventListener{
+                    override fun onDataChange(snapshot: DataSnapshot) {
+                        if (snapshot.exists()){
+                            startActivity(intent)
                             hideProgressBar()
+                        }else{
+                            val users :Users= Users(auth.currentUser!!.displayName,auth.currentUser!!.email,userID)
+                            databaseRefe.setValue(users).addOnCompleteListener{setValueTask ->
+                                if (setValueTask.isSuccessful){
+                                    startActivity(intent)
+                                    finish()
+                                }
+                                else{
+                                    showToast(this@LoginSelectionActivity,"Failed. Please Try again")
+                                }
+                                hideProgressBar()
+                            }
                         }
                     }
 
-            }
-            else{
-                showToast(this, "Incorrect Email or Password. Please Try Again")
+                    override fun onCancelled(error: DatabaseError) {
+                        Log.e("TAG","Database Error: ${error.message}")
+                        hideProgressBar()
+                        showToast(this@LoginSelectionActivity,"Database error. Please Try again")
+                    }
+
+                })
+            }else{
                 hideProgressBar()
+                showToast(this@LoginSelectionActivity,"Sign In Failed. Please try Again")
             }
         }
-    }
 
+    }
 
 
 

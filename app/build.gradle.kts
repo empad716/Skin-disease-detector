@@ -57,6 +57,7 @@ dependencies {
     implementation(libs.play.services.tflite.acceleration.service)
     implementation("androidx.core:core-splashscreen:1.0.1")
     implementation("com.mapbox.maps:android:11.3.1")
+    implementation(libs.firebase.storage)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
