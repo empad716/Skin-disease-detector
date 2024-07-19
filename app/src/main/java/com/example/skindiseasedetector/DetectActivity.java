@@ -27,18 +27,19 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
-
 import org.tensorflow.lite.DataType;
 import org.tensorflow.lite.support.tensorbuffer.TensorBuffer;
-
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
+import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Date;
+import java.util.Locale;
 
 public class DetectActivity extends BaseActivity {
     ImageView imageView;
@@ -46,7 +47,7 @@ public class DetectActivity extends BaseActivity {
     int imageSize = 128;
     ActivityDetectBinding binding = null;
     FirebaseAuth auth;
-    String uid,dateTime;
+    String uid,dateTime,dateTimeData;
 
 
     FirebaseDatabase database;
@@ -65,15 +66,16 @@ public class DetectActivity extends BaseActivity {
         LocalDateTime currentDateTime = LocalDateTime.now();
         DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("hh:mm:ss a");
-        String dateTime = currentDateTime.format(dateFormatter) +" "+ currentDateTime.format(timeFormatter);
-        String dateTimeData = currentDateTime.format(dateFormatter)+ " "+ currentDateTime.format(DateTimeFormatter.ofPattern("hh:mma"));
+         dateTime = currentDateTime.format(dateFormatter) +" "+ currentDateTime.format(timeFormatter);
+         dateTimeData = currentDateTime.format(dateFormatter)+ " "+ currentDateTime.format(DateTimeFormatter.ofPattern("hh:mm a"));
 
 
-        Bitmap image = getIntent().getParcelableExtra("imageBitmap");
-        imageView.setImageBitmap(image);
-        image = Bitmap.createScaledBitmap(image,imageSize,imageSize,false);
-        classifyImage(image);
+            Bitmap image = getIntent().getParcelableExtra("imageBitmap");
+            imageView.setImageBitmap(image);
+            image = Bitmap.createScaledBitmap(image,imageSize,imageSize,false);
+            classifyImage(image);
 
+            //uploadImage(image);
 
 
 
@@ -86,89 +88,87 @@ public class DetectActivity extends BaseActivity {
             public void onClick(View v) { cancelIntent();
             }
         });
+        Bitmap finalImage = image;
         binding.save.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-                String diagnosis = binding.result.getText().toString();
-                String cause = binding.resultCause.getText().toString();
-                String symptoms = binding.resultSymptoms.getText().toString();
-                String treatment = binding.resultTreatment.getText().toString();
-
-                if (diagnosis.isEmpty()){
-                    binding.result.setError("Cannot be empty");
-                    return;
-                }
-                if (cause.isEmpty()){
-                    binding.resultCause.setError("Cannot be empty");
-                    return;
-                }
-                if (symptoms.isEmpty()){
-                    binding.resultSymptoms.setError("Cannot be empty");
-                    return;
-                }
-                if (treatment.isEmpty()){
-                    binding.resultTreatment.setError("Cannot be empty");
-                    return;
-                }
-                showProgressBar();
-                if(auth.getCurrentUser() != null){
-                   DatabaseReference databaseRef = database.getReference().child("users").child(auth.getCurrentUser().getUid()).child("history")
-                           .child(dateTime);
-                   UserData data = new UserData(diagnosis,cause,symptoms,treatment,dateTimeData);
-                   databaseRef.setValue(data);
-                    saveIntent();
-                    hideProgressBar();
-                }
-
+                uploadImage(finalImage);
+                
+                saveIntent();
             }
         });
-       // uploadImage(image);
 
     }
 
-   // private void uploadImage(Bitmap bitmap) {
+
+   private void uploadImage(Bitmap bitmap) {
 
 
-     //   ByteArrayOutputStream baos = new ByteArrayOutputStream();
-     //   bitmap.compress(Bitmap.CompressFormat.JPEG,100,baos);
-    //    byte[] data = baos.toByteArray();
+       ByteArrayOutputStream baos = new ByteArrayOutputStream();
+       bitmap.compress(Bitmap.CompressFormat.JPEG,100,baos);
+        byte[] data = baos.toByteArray();
 
-   //     FirebaseStorage storage = FirebaseStorage.getInstance();
-  //      StorageReference storageRef = storage.getReference();
-   //     StorageReference imageRef= storageRef.child("images/"+uid+"/"+ dateTime+".jpg");
-//
-    //    UploadTask uploadTask= imageRef.putBytes(data);
-    //    uploadTask.addOnSuccessListener(taskSnapshot -> {
-   //        imageRef.getDownloadUrl().addOnSuccessListener(uri -> {
-    //            String downloadUrl = uri.toString();
-    //            Log.d("FirebaseStorage","Download URL:" +downloadUrl);
-    //            saveImageUrl(downloadUrl,dateTime,uid);
+      FirebaseStorage storage = FirebaseStorage.getInstance();
+       StorageReference storageRef = storage.getReference();
+        StorageReference imageRef= storageRef.child("images/"+auth.getCurrentUser().getUid()+"/"+ dateTime+".jpg");
 
-    //        });
-     //   }).addOnFailureListener(exception ->{
-    //        Log.e("Firebase","Upload Failed", exception);
-    //    });
+        UploadTask uploadTask= imageRef.putBytes(data);
+        uploadTask.addOnSuccessListener(taskSnapshot -> {
+           imageRef.getDownloadUrl().addOnSuccessListener(uri -> {
+                String downloadUrl = uri.toString();
 
- //   }
+                Log.d("FirebaseStorage","Download URL:" +downloadUrl);
+               saveImageUrl(downloadUrl);
+            });
+        }).addOnFailureListener(exception ->{
+            Log.e("Firebase","Upload Failed", exception);
+        });
 
-    // private void saveImageUrl(String imageUrl,String dateTime, String uid ) {
-      //  DatabaseReference myRef = database.getReference();
-      //  DatabaseReference databaseRef = database.getReference()
-        //        .child("users")
-       //         .child(uid)
-      //          .child("history")
-      //          .child(dateTime);
+    }
 
-     //   databaseRef.setValue(imageUrl).addOnCompleteListener(task -> {
-     //       if (task.isSuccessful()){
-    //            Log.d("RealtimeDatabase","Image URl saved successfully");
-    //        }else {
-    //            Log.e("RealtimeDatabase","Failed to save image",task.getException());
-    //        }
-   //     });
+     private void saveImageUrl(String imageUrl) {
+         String diagnosis = binding.result.getText().toString();
+         String cause = binding.resultCause.getText().toString();
+         String symptoms = binding.resultSymptoms.getText().toString();
+         String treatment = binding.resultTreatment.getText().toString();
+         if (diagnosis.isEmpty()){
+             binding.result.setError("Cannot be empty");
+             return;
+         }
+         if (cause.isEmpty()){
+             binding.resultCause.setError("Cannot be empty");
+             return;
+         }
+         if (symptoms.isEmpty()){
+             binding.resultSymptoms.setError("Cannot be empty");
+             return;
+         }
+         if (treatment.isEmpty()){
+             binding.resultTreatment.setError("Cannot be empty");
+             return;
+         }
+         if(auth.getCurrentUser() != null){
+             DatabaseReference databaseRef = database.getReference().child("users").child(auth.getCurrentUser().getUid()).child("history");
+             String uniqueKey  = databaseRef.push().getKey();
+             long timestamp = System.currentTimeMillis();
 
-  //  }
+             UserData data = new UserData(diagnosis,cause,symptoms,treatment,dateTimeData,imageUrl,timestamp);
+
+             if(uniqueKey !=null){
+                 databaseRef.child(uniqueKey).setValue(data).addOnCompleteListener(task -> {
+                     if (task.isSuccessful()){
+                         Log.d("RealtimeDatabase","Image URl saved successfully");
+                     }else {
+                         Log.e("RealtimeDatabase","Failed to save image",task.getException());
+                     }
+                 });
+             }
+
+
+
+         }
+
+    }
 
 
     private void saveIntent() {

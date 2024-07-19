@@ -4,10 +4,13 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.bumptech.glide.Glide;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
@@ -38,6 +41,14 @@ public class Adapterhistory extends RecyclerView.Adapter<Adapterhistory.ViewHold
         holder.treatment.setText(history.getTreatment());
         holder.date.setText(history.getDate());
 
+
+        Glide.with(holder.image.getContext())
+               .load(history.getImageUrl())
+                .placeholder(R.drawable.ic_launcher_foreground)
+                .error(R.drawable.ic_launcher_background)
+               .into(holder.image);
+
+
     }
 
     @Override
@@ -47,7 +58,8 @@ public class Adapterhistory extends RecyclerView.Adapter<Adapterhistory.ViewHold
 
     public static class ViewHolder extends RecyclerView.ViewHolder{
 
-        TextView diagnosis,cause,symptoms,treatment,date;
+        TextView diagnosis,cause,symptoms,treatment,date,url;
+        ImageView image;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -57,6 +69,7 @@ public class Adapterhistory extends RecyclerView.Adapter<Adapterhistory.ViewHold
             symptoms = itemView.findViewById(R.id.symptomsTV);
             treatment = itemView.findViewById(R.id.treatmentTV);
             date = itemView.findViewById(R.id.dateTV);
+            image = itemView.findViewById(R.id.imageTV);
         }
     }
 }

@@ -19,7 +19,7 @@ playServicesTfliteAccelerationService = "16.0.0-beta01"
 googleAndroidLibrariesMapsplatformSecretsGradlePlugin = "2.0.1"
 playServicesMaps = "18.2.0"
 googleGmsGoogleServices = "4.3.14"
-firebaseStorage = "20.1.0"
+firebaseStorage = "21.0.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }

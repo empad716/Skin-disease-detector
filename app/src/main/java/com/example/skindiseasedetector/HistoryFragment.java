@@ -16,9 +16,12 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 
 
 public class HistoryFragment extends Fragment {
@@ -36,13 +39,14 @@ public class HistoryFragment extends Fragment {
 
         recyclerView = view.findViewById(R.id.historyList);
         databaseReference = FirebaseDatabase.getInstance().getReference().child("users").child(auth.getCurrentUser().getUid()).child("history");
+        Query sortedQuery = databaseReference.orderByChild("timestamp");
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
 
         list= new ArrayList<>();
         adapterhistory = new Adapterhistory(getActivity(),list);
         recyclerView.setAdapter(adapterhistory);
-        databaseReference.addValueEventListener(new ValueEventListener() {
+        sortedQuery.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 for (DataSnapshot dataSnapshot: snapshot.getChildren()){
@@ -51,6 +55,7 @@ public class HistoryFragment extends Fragment {
 
                 }
                 adapterhistory.notifyDataSetChanged();
+                Collections.reverse(list);
             }
 
             @Override
