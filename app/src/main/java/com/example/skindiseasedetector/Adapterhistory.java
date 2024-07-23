@@ -1,11 +1,13 @@
 package com.example.skindiseasedetector;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -16,9 +18,8 @@ import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 public class Adapterhistory extends RecyclerView.Adapter<Adapterhistory.ViewHolder> {
-
-    Context context;
-    ArrayList<History> list;
+     static Context context;
+    static ArrayList<History> list;
 
     public Adapterhistory(Context context, ArrayList<History> list) {
         this.context = context;
@@ -36,9 +37,6 @@ public class Adapterhistory extends RecyclerView.Adapter<Adapterhistory.ViewHold
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         History history = list.get(position);
         holder.diagnosis.setText(history.getDiagnosis());
-        holder.cause.setText(history.getCause());
-        holder.symptoms.setText(history.getSymptoms());
-        holder.treatment.setText(history.getTreatment());
         holder.date.setText(history.getDate());
 
 
@@ -56,7 +54,7 @@ public class Adapterhistory extends RecyclerView.Adapter<Adapterhistory.ViewHold
         return list.size();
     }
 
-    public static class ViewHolder extends RecyclerView.ViewHolder{
+    public static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
 
         TextView diagnosis,cause,symptoms,treatment,date,url;
         ImageView image;
@@ -65,11 +63,24 @@ public class Adapterhistory extends RecyclerView.Adapter<Adapterhistory.ViewHold
             super(itemView);
 
             diagnosis = itemView.findViewById(R.id.diagnosisTV);
-            cause = itemView.findViewById(R.id.causeTV);
-            symptoms = itemView.findViewById(R.id.symptomsTV);
-            treatment = itemView.findViewById(R.id.treatmentTV);
             date = itemView.findViewById(R.id.dateTV);
             image = itemView.findViewById(R.id.imageTV);
+            itemView.setOnClickListener(this);
+        }
+
+        @Override
+        public void onClick(View v) {
+            int position = getAdapterPosition();
+            Intent intent = new Intent(context, InfoActivity.class);
+            intent.putExtra("diagnosis", list.get(position).getDiagnosis());
+            intent.putExtra("cause",list.get(position).getCause());
+            intent.putExtra("symptoms",list.get(position).getSymptoms());
+            intent.putExtra("treatment",list.get(position).getTreatment());
+            intent.putExtra("date",list.get(position).getDate());
+            intent.putExtra("image",list.get(position).getImageUrl());
+            intent.putExtra("timestamp",list.get(position).getTimestamp());
+            context.startActivity(intent);
+
         }
     }
 }

@@ -2,6 +2,7 @@ package com.example.skindiseasedetector;
 
 public class History {
     String diagnosis,cause,symptoms,treatment,date,imageUrl;
+    long timestamp;
 
     public String getDiagnosis() { return diagnosis;}
 
@@ -15,5 +16,6 @@ public class History {
 
     public String getImageUrl(){ return imageUrl;}
 
+    public long getTimestamp(){return timestamp; }
 
 }
