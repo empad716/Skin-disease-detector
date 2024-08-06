@@ -59,6 +59,7 @@ dependencies {
     implementation("com.mapbox.maps:android:11.3.1")
     implementation(libs.firebase.storage)
     implementation ("com.github.bumptech.glide:glide:4.12.0")
+    implementation("de.hdodenhof:circleimageview:3.1.0")
     annotationProcessor ("com.github.bumptech.glide:compiler:4.12.0")
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

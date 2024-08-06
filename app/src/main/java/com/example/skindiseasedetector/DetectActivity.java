@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.media.ThumbnailUtils;
 import android.net.Uri;
 import android.os.Bundle;
@@ -71,11 +72,11 @@ public class DetectActivity extends BaseActivity {
 
 
             Bitmap image = getIntent().getParcelableExtra("imageBitmap");
-            imageView.setImageBitmap(image);
+        imageView.setImageBitmap(image);
             image = Bitmap.createScaledBitmap(image,imageSize,imageSize,false);
-            classifyImage(image);
+            //classifyImage(image);
 
-            //uploadImage(image);
+
 
 
 
@@ -88,11 +89,11 @@ public class DetectActivity extends BaseActivity {
             public void onClick(View v) { cancelIntent();
             }
         });
-        Bitmap finalImage = image;
+       // Bitmap finalImage = image;
         binding.save.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                uploadImage(finalImage);
+             //   uploadImage(finalImage);
                 
                 saveIntent();
             }
@@ -103,7 +104,7 @@ public class DetectActivity extends BaseActivity {
 
    private void uploadImage(Bitmap bitmap) {
 
-
+        showProgressBar();
        ByteArrayOutputStream baos = new ByteArrayOutputStream();
        bitmap.compress(Bitmap.CompressFormat.JPEG,100,baos);
         byte[] data = baos.toByteArray();
@@ -119,6 +120,7 @@ public class DetectActivity extends BaseActivity {
 
                 Log.d("FirebaseStorage","Download URL:" +downloadUrl);
                saveImageUrl(downloadUrl);
+               hideProgressBar();
             });
         }).addOnFailureListener(exception ->{
             Log.e("Firebase","Upload Failed", exception);
@@ -158,6 +160,7 @@ public class DetectActivity extends BaseActivity {
                  databaseRef.child(uniqueKey).setValue(data).addOnCompleteListener(task -> {
                      if (task.isSuccessful()){
                          Log.d("RealtimeDatabase","Image URl saved successfully");
+                         showToast(DetectActivity.this,"Saved Successfully");
                      }else {
                          Log.e("RealtimeDatabase","Failed to save image",task.getException());
                      }

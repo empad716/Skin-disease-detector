@@ -32,7 +32,7 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
-public class InfoActivity extends AppCompatActivity {
+public class InfoActivity extends BaseActivity {
     ActivityInfoBinding binding = null;
     DatabaseReference databaseReference;
     FirebaseAuth auth;
@@ -97,6 +97,7 @@ public class InfoActivity extends AppCompatActivity {
             }
 
             private void deleteItemHistory(long timestamp) {
+                showProgressBar();
                 databaseReference = FirebaseDatabase.getInstance().getReference()
                         .child("users")
                         .child(auth.getCurrentUser().getUid())
@@ -111,6 +112,7 @@ public class InfoActivity extends AppCompatActivity {
                             if (userData!=null){
                                 String imageUrl = userData.getImageUrl();
                                 snapshot.getRef().removeValue();
+                                hideProgressBar();
                                 if (imageUrl !=null && !imageUrl.isEmpty()){
                                     deleteImageFromStorage(imageUrl);
                                 }

@@ -15,15 +15,28 @@
         android:layout_height="wrap_content"
         android:background="#ADDFDE"
         tools:context=".InfoActivity">
+
+        <ImageButton
+            android:id="@+id/back"
+            android:layout_width="38dp"
+            android:layout_height="34dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="8dp"
+            android:background="?android:attr/selectableItemBackground"
+            app:layout_constraintBottom_toTopOf="@+id/image"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/arrow_back" />
+
+
         <ImageView
             android:id="@+id/image"
             android:layout_width="223dp"
             android:layout_height="224dp"
-            android:layout_marginTop="68dp"
+            android:layout_marginTop="108dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
-
 
         <LinearLayout
             android:id="@+id/linearLayout3"
@@ -78,6 +91,7 @@
                 android:text=""
                 android:textColor="@color/black"
                 android:textSize="25dp" />
+
         </LinearLayout>
 
         <LinearLayout
@@ -168,29 +182,16 @@
             android:id="@+id/delete"
             android:layout_width="100dp"
             android:layout_height="53dp"
-            android:layout_marginTop="44dp"
-            android:layout_marginBottom="4dp"
+            android:layout_marginTop="32dp"
+            android:layout_marginEnd="16dp"
             android:text="Delete"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="@+id/linearLayout5"
-            app:layout_constraintHorizontal_bias="1.0"
-            app:layout_constraintStart_toStartOf="@+id/linearLayout5"
-            app:layout_constraintTop_toBottomOf="@+id/linearLayout5"
-            app:layout_constraintVertical_bias="0.0" />
+            app:layout_constraintBottom_toTopOf="@+id/image"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.0"
+            android:textColor="@color/blue"
+            android:background="?android:attr/selectableItemBackground"/>
 
-        <Button
-            android:id="@+id/back"
-            android:layout_width="100dp"
-            android:layout_height="53dp"
-            android:layout_marginTop="44dp"
-            android:layout_marginBottom="4dp"
-            android:text="Back"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="@+id/linearLayout5"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="@+id/linearLayout5"
-            app:layout_constraintTop_toBottomOf="@+id/linearLayout5"
-            app:layout_constraintVertical_bias="0.0" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>

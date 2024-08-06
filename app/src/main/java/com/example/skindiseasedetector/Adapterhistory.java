@@ -42,8 +42,8 @@ public class Adapterhistory extends RecyclerView.Adapter<Adapterhistory.ViewHold
 
         Glide.with(holder.image.getContext())
                .load(history.getImageUrl())
-                .placeholder(R.drawable.ic_launcher_foreground)
-                .error(R.drawable.ic_launcher_background)
+                .placeholder(R.drawable.baseline_image)
+                .error(R.drawable.baseline_broken_image)
                .into(holder.image);
 
 

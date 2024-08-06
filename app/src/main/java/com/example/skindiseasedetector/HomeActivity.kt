@@ -28,6 +28,7 @@ import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
+import java.io.ByteArrayOutputStream
 import java.io.IOException
 
 
@@ -37,7 +38,7 @@ class HomeActivity : BaseActivity() {
     private lateinit var users: Users
     private lateinit var uid: String
     private var binding:ActivityHomeBinding? = null
-    private var image: Bitmap? = null
+
     private lateinit var builder: AlertDialog.Builder
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -166,18 +167,25 @@ class HomeActivity : BaseActivity() {
                 val dimension:Int = Math.min(image.width,image.height)
                 image = ThumbnailUtils.extractThumbnail(image ,dimension,dimension)
                 navigateToImageDisplayActivity(image)
-               // image = Bitmap.createScaledBitmap(image,imageSize,imageSize,false)
+
 
             }else{
-                val data: Uri? = data!!.data
-                try {
-                    image = MediaStore.Images.Media.getBitmap(this.contentResolver, data)
+                val data: Uri? = data?.data
 
-                }catch (e:IOException){
-                    e.printStackTrace()
+                var image: Bitmap? =null
+                if (data !=null){
+                    try {
+                        image = MediaStore.Images.Media.getBitmap(this.contentResolver, data)
+                        navigateToImageDisplayActivity(image)
+
+                    }catch (e:IOException){
+                        e.printStackTrace()
+                    }
                 }
-                image?.let { navigateToImageDisplayActivity(it) }
-               // image = image?.let { Bitmap.createScaledBitmap(it, imageSize,imageSize,false) }
+
+
+
+
 
             }
 
@@ -186,9 +194,8 @@ class HomeActivity : BaseActivity() {
     }
     private fun navigateToImageDisplayActivity(imageBitmap: Bitmap) {
         showProgressBar()
-        val intent = Intent(this, DetectActivity::class.java).apply {
-            putExtra("imageBitmap", imageBitmap)
-        }
+        val intent = Intent(this, DetectActivity::class.java).apply { putExtra("imageBitmap", imageBitmap) }
+
         startActivity(intent)
         hideProgressBar()
     }
@@ -196,7 +203,7 @@ class HomeActivity : BaseActivity() {
         databaseReference.child(uid).addValueEventListener(object : ValueEventListener{
             override fun onDataChange(snapshot: DataSnapshot) {
                 users = snapshot.getValue(Users::class.java)!!
-                binding!!.textViewName.setText(users.name)
+                binding!!.textViewName.setText(users.fullname)
 
             }
 

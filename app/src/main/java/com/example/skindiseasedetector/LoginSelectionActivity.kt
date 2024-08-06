@@ -122,7 +122,7 @@ class LoginSelectionActivity : BaseActivity() {
                             startActivity(intent)
                             hideProgressBar()
                         }else{
-                            val users :Users= Users(auth.currentUser!!.displayName,auth.currentUser!!.email,userID)
+                            val users :Users= Users(null,auth.currentUser!!.displayName,auth.currentUser!!.email,null,null,null,userID,null)
                             databaseRefe.setValue(users).addOnCompleteListener{setValueTask ->
                                 if (setValueTask.isSuccessful){
                                     startActivity(intent)
