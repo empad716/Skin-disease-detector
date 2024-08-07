@@ -1,6 +1,7 @@
 package com.example.skindiseasedetector;
 
 import android.Manifest;
+import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -32,8 +33,10 @@ import org.tensorflow.lite.DataType;
 import org.tensorflow.lite.support.tensorbuffer.TensorBuffer;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.text.SimpleDateFormat;
@@ -71,30 +74,47 @@ public class DetectActivity extends BaseActivity {
          dateTimeData = currentDateTime.format(dateFormatter)+ " "+ currentDateTime.format(DateTimeFormatter.ofPattern("hh:mm a"));
 
 
-            Bitmap image = getIntent().getParcelableExtra("imageBitmap");
-        imageView.setImageBitmap(image);
-            image = Bitmap.createScaledBitmap(image,imageSize,imageSize,false);
-            //classifyImage(image);
+        Bitmap image = getIntent().getParcelableExtra("imageBitmap");
+        Uri uri = getIntent().getParcelableExtra("imageUri");
 
+        if (image!=null){
+            imageView.setImageBitmap(image);
+             image = Bitmap.createScaledBitmap(image,imageSize,imageSize,false);
+            classifyImage(image);
+        }else if(uri !=null){
+            imageView.setImageURI(uri);
+            try {
+                 image = MediaStore.Images.Media.getBitmap(getContentResolver(),uri);
+                image = Bitmap.createScaledBitmap(image,imageSize,imageSize,false);
+            }catch (IOException e){
+                // TODO Handle the exception
+            }
+           classifyImage(image);
 
-
-
-
-
-
+        }
 
 
         binding.cancel.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) { cancelIntent();
+            public void onClick(View v) {
+                new AlertDialog.Builder(DetectActivity.this)
+                        .setTitle("Cancel")
+                        .setMessage("Are you sure you don't want to save?")
+                        .setPositiveButton("YES",((dialog,which)-> cancelIntent()))
+                        .setNegativeButton("NO",null)
+                        .create()
+                        .show();
+
+
+
             }
         });
-       // Bitmap finalImage = image;
+        Bitmap finalImage = image;
+
         binding.save.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-             //   uploadImage(finalImage);
-                
+                    uploadImage(finalImage);
                 saveIntent();
             }
         });
@@ -102,7 +122,9 @@ public class DetectActivity extends BaseActivity {
     }
 
 
-   private void uploadImage(Bitmap bitmap) {
+
+
+    private void uploadImage(Bitmap bitmap) {
 
         showProgressBar();
        ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -128,7 +150,10 @@ public class DetectActivity extends BaseActivity {
 
     }
 
-     private void saveImageUrl(String imageUrl) {
+
+
+
+    private void saveImageUrl(String imageUrl) {
          String diagnosis = binding.result.getText().toString();
          String cause = binding.resultCause.getText().toString();
          String symptoms = binding.resultSymptoms.getText().toString();
@@ -246,4 +271,6 @@ public class DetectActivity extends BaseActivity {
         }
 
     }
+
+
 }

@@ -1,6 +1,7 @@
 package com.example.skindiseasedetector
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.app.Dialog
 import android.content.Intent
@@ -19,6 +20,9 @@ import android.widget.LinearLayout
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.enableEdgeToEdge
 import androidx.fragment.app.Fragment
+import android.content.Context
+import android.graphics.ImageDecoder
+import android.os.Build
 import com.example.skindiseasedetector.databinding.ActivityHomeBinding
 import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
@@ -159,6 +163,8 @@ class HomeActivity : BaseActivity() {
         }
 
     }
+
+
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
 
         if (resultCode == RESULT_OK) {
@@ -167,37 +173,42 @@ class HomeActivity : BaseActivity() {
                 val dimension:Int = Math.min(image.width,image.height)
                 image = ThumbnailUtils.extractThumbnail(image ,dimension,dimension)
                 navigateToImageDisplayActivity(image)
-
-
             }else{
-                val data: Uri? = data?.data
-
+                val data = data?.data
                 var image: Bitmap? =null
-                if (data !=null){
-                    try {
-                        image = MediaStore.Images.Media.getBitmap(this.contentResolver, data)
-                        navigateToImageDisplayActivity(image)
+                 try {
+                     // image = MediaStore.Images.Media.getBitmap(this.contentResolver, data)
 
                     }catch (e:IOException){
                         e.printStackTrace()
                     }
+                if (data != null) {
+                    navigateToImageDisplayActivityUri(data)
                 }
-
-
-
-
-
             }
 
         }
         super.onActivityResult(requestCode, resultCode, data)
     }
+
+
+
     private fun navigateToImageDisplayActivity(imageBitmap: Bitmap) {
         showProgressBar()
-        val intent = Intent(this, DetectActivity::class.java).apply { putExtra("imageBitmap", imageBitmap) }
+        val intent = Intent(this, DetectActivity::class.java).apply {
+            putExtra("imageBitmap", imageBitmap) }
+
 
         startActivity(intent)
         hideProgressBar()
+    }
+    private fun navigateToImageDisplayActivityUri(imageUri: Uri){
+        val intent = Intent(this,DetectActivity::class.java).apply {
+            putExtra("imageUri",imageUri)
+        }
+        startActivity(intent)
+
+
     }
     private fun getUserData() {
         databaseReference.child(uid).addValueEventListener(object : ValueEventListener{
