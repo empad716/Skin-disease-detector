@@ -38,6 +38,8 @@ public class MapsFragment extends Fragment {
     MapView mapView;
     FloatingActionButton floatingActionButton;
     Button searchNearby;
+    private double currentLatitude;
+    private double currentLongitude;
 
     private final ActivityResultLauncher<String> activityResultLauncher = registerForActivityResult(new ActivityResultContracts.RequestPermission(), new ActivityResultCallback<Boolean>() {
         @Override
@@ -104,9 +106,8 @@ public class MapsFragment extends Fragment {
             public void onStyleLoaded(@NonNull Style style) {
                 mapView.getMapboxMap().setCamera(new CameraOptions.Builder().zoom(17.0).build());
                 LocationComponentPlugin locationComponentPlugin = getLocationComponent(mapView);
-                locationComponentPlugin.setEnabled(true);
-
-                locationComponentPlugin.addOnIndicatorPositionChangedListener(onIndicatorPositionChangedListener);
+               locationComponentPlugin.setEnabled(true);
+               locationComponentPlugin.addOnIndicatorPositionChangedListener(onIndicatorPositionChangedListener);
                 locationComponentPlugin.addOnIndicatorBearingChangedListener(onIndicatorBearingChangedListener);
                 getGestures(mapView).addOnMoveListener(onMoveListener);
                 floatingActionButton.setOnClickListener(new View.OnClickListener() {
@@ -124,6 +125,10 @@ public class MapsFragment extends Fragment {
                 searchNearby.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
+                        searchNearbyDermaClinic();
+                    }
+
+                    private void searchNearbyDermaClinic() {
 
                     }
                 });

@@ -1,16 +1,22 @@
 package com.example.skindiseasedetector
 
 
+import android.app.Activity
 import android.app.AlertDialog
+import android.app.Dialog
+import android.content.Context
 import android.content.Intent
+import android.net.ConnectivityManager
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
+import android.widget.Toast
 import com.bumptech.glide.Glide
 import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
@@ -23,7 +29,7 @@ import com.google.firebase.database.ValueEventListener
 import de.hdodenhof.circleimageview.CircleImageView
 
 
-class ProfileFragment : Fragment() {
+class ProfileFragment : BaseFragment(){
     private lateinit var auth: FirebaseAuth
     private lateinit var signOut: LinearLayout
     private lateinit var accountDetailsBtn: LinearLayout
@@ -32,7 +38,7 @@ class ProfileFragment : Fragment() {
     private lateinit var uid: String
     private lateinit var builder: AlertDialog.Builder
     private lateinit var tutorial:LinearLayout
-
+    private lateinit var about:LinearLayout
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -41,6 +47,7 @@ class ProfileFragment : Fragment() {
         signOut = view.findViewById(R.id.signOutBtn)
         accountDetailsBtn = view.findViewById(R.id.accountDetails)
         tutorial = view.findViewById(R.id.tutorial)
+        about = view.findViewById(R.id.about)
         auth = Firebase.auth
         uid = auth.currentUser?.uid.toString()
         databaseReference = FirebaseDatabase.getInstance().getReference("users")
@@ -54,10 +61,15 @@ class ProfileFragment : Fragment() {
             builder.setMessage("Are you sure you want to sign out?")
             builder.setCancelable(true)
             builder.setPositiveButton("YES"){dialog,id->
+                showProgressBar()
                 if (auth.currentUser!=null){
-                   auth.signOut()
-                 startActivity(Intent(activity,LoginSelectionActivity::class.java))
-                    activity?.overridePendingTransition(R.anim.slide_in_left,R.anim.slide_out_right)
+                    if (isConnected()){
+                        auth.signOut()
+                        hideProgressBar()
+                        startActivity(Intent(activity,LoginSelectionActivity::class.java))
+                        activity?.overridePendingTransition(R.anim.slide_in_left,R.anim.slide_out_right)
+                    }
+
                 }
             }
             builder.setNegativeButton("NO"){dialog,id->
@@ -67,10 +79,16 @@ class ProfileFragment : Fragment() {
         }
         accountDetailsBtn.setOnClickListener{
             startActivity(Intent(activity, AccountDetailsActivity::class.java))
+            activity?.overridePendingTransition(R.anim.slide_in_right,R.anim.slide_out_left)
         }
         tutorial.setOnClickListener{
             startActivity(Intent(activity,TutorialActivity::class.java))
+            activity?.overridePendingTransition(R.anim.slide_in_right,R.anim.slide_out_left)
         }
+        about.setOnClickListener{
+            startActivity(Intent(activity,FourthActivity::class.java))
+        }
+
         return view
     }
 
@@ -100,4 +118,6 @@ class ProfileFragment : Fragment() {
 
         })
     }
+
+
 }

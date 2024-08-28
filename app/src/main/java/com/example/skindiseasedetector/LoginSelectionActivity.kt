@@ -39,7 +39,7 @@ class LoginSelectionActivity : BaseActivity() {
             }
 
         })
-
+        notConnected()
         auth = Firebase.auth
         database = Firebase.database
         val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
@@ -77,7 +77,8 @@ class LoginSelectionActivity : BaseActivity() {
                 hideProgressBar()
             }
             .addOnFailureListener{
-                Log.d("TAG","anonymousAuth: $it")
+                showToast(this, "Please Try again")
+                hideProgressBar()
             }
     }
 
@@ -101,7 +102,7 @@ class LoginSelectionActivity : BaseActivity() {
            }
        }
        else{
-           showToast(this, "SigIn Google Failed. Please Try Again")
+           showToast(this, "Sign In Google Failed. Please Try Again")
        }
     }
 
@@ -139,7 +140,7 @@ class LoginSelectionActivity : BaseActivity() {
                     override fun onCancelled(error: DatabaseError) {
                         Log.e("TAG","Database Error: ${error.message}")
                         hideProgressBar()
-                        showToast(this@LoginSelectionActivity,"Database error. Please Try again")
+                        showToast(this@LoginSelectionActivity,"Sign In Failed. Please try Again")
                     }
 
                 })

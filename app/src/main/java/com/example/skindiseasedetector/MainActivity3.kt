@@ -10,7 +10,7 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.example.skindiseasedetector.databinding.ActivityMain3Binding
 
-class MainActivity3 : AppCompatActivity() {
+class MainActivity3 : AppCompatActivity(){
     private var binding: ActivityMain3Binding? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

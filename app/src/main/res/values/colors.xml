@@ -4,6 +4,6 @@
     <color name="white">#FFFFFFFF</color>
     <color name="blue">#1A9DF1</color>
     <color name="pink">#DD87E3</color>
-
+    <color name="semi_transparent">#80FFFFFF</color>
 
 </resources>

@@ -52,20 +52,21 @@ class HomeActivity : BaseActivity() {
         auth = Firebase.auth
         uid = auth.currentUser?.uid.toString()
         databaseReference = FirebaseDatabase.getInstance().getReference("users")
-
+        notConnected()
         onBackPressedDispatcher.addCallback(this,object : OnBackPressedCallback(true){
             override fun handleOnBackPressed() {
-                showProgressBar()
                 builder = AlertDialog.Builder(this@HomeActivity)
                 builder.setTitle("Sign Out")
                 builder.setMessage("Are you sure you want to Sign Out?")
                 builder.setCancelable(true)
                 builder.setPositiveButton("YES"){dialog,id->
+                    showProgressBar()
                     if (auth.currentUser!=null){
                         auth.signOut()
+                        hideProgressBar()
                         startActivity(Intent(this@HomeActivity,LoginSelectionActivity::class.java))
                         overridePendingTransition(R.anim.slide_in_left,R.anim.slide_out_right)
-                        hideProgressBar()
+
                     }
                 }
                 builder.setNegativeButton("NO"){dialog,id->

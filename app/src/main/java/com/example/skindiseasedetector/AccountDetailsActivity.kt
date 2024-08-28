@@ -17,7 +17,7 @@ import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 
-class AccountDetailsActivity : AppCompatActivity() {
+class AccountDetailsActivity : BaseActivity() {
     private var binding: ActivityAccountDetailsBinding? = null
     private lateinit var auth: FirebaseAuth
     private lateinit var databaseReference: DatabaseReference
@@ -34,6 +34,7 @@ class AccountDetailsActivity : AppCompatActivity() {
         if (uid.isNotEmpty()) {
             userData()
         }
+        notConnected()
         binding!!.imageButton.setOnClickListener {
             val intent = Intent(this@AccountDetailsActivity, HomeActivity::class.java)
             startActivity(intent)

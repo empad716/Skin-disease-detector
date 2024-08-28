@@ -21,6 +21,7 @@ class ForgotPasswordActivity : BaseActivity() {
         binding = ActivityForgotPasswordBinding.inflate(layoutInflater)
         setContentView(binding?.root)
         auth = Firebase.auth
+        notConnected()
         binding?.submitBtn?.setOnClickListener{
             resetPassword()
         }

@@ -45,7 +45,7 @@ public class InfoActivity extends BaseActivity {
         EdgeToEdge.enable(this);
         binding = ActivityInfoBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
-
+        notConnected();
 
 
         Intent intent = getIntent();
@@ -76,7 +76,7 @@ public class InfoActivity extends BaseActivity {
         binding.delete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-              showDialog();
+                showDialog();
             }
 
             private void showDialog() {

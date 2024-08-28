@@ -75,6 +75,7 @@ public class EditAccountActivity extends BaseActivity {
         if(uid!=null){
             getUserData();
         }
+        notConnected();
         binding.birthDate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

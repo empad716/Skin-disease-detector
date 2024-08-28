@@ -9,5 +9,8 @@
     <string name="normal_skin_treatment">Normal Skin T</string>
     <string name="melanoma_cause">melanoma nga to</string>
     <string name="failed">Something Went Wrong</string>
-    <string name="mapbox_access_token">sk.eyJ1Ijoic2RkMDEwMSIsImEiOiJjbHdmNzk5bjIxbTMyMmpwbHUzOW84eGl4In0.Y43KC05rDExaeylI9UAf2g</string>
+    <string name="google_map_api_key">AIzaSyCiFHG1H8XznGaQMWev53Gu3Ll7PPeedaI</string>
+
+    <string name="mapbox_access_token">pk.eyJ1Ijoic2RkMDEwMSIsImEiOiJjbHdhaDdtOG8wZG43MmlvMDZ1OXRtbWRsIn0.90_Xj6ajmBmVYF1wb4MTkg</string>
+    <string name="title_activity_maps">MapsActivity</string>
 </resources>

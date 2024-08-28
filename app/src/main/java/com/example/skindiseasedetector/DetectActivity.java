@@ -76,11 +76,13 @@ public class DetectActivity extends BaseActivity {
 
         Bitmap image = getIntent().getParcelableExtra("imageBitmap");
         Uri uri = getIntent().getParcelableExtra("imageUri");
-
+        showProgressBar();
+        notConnected();
         if (image!=null){
             imageView.setImageBitmap(image);
              image = Bitmap.createScaledBitmap(image,imageSize,imageSize,false);
             classifyImage(image);
+            hideProgressBar();
         }else if(uri !=null){
             imageView.setImageURI(uri);
             try {
@@ -90,6 +92,7 @@ public class DetectActivity extends BaseActivity {
                 // TODO Handle the exception
             }
            classifyImage(image);
+            hideProgressBar();
 
         }
 
@@ -248,26 +251,33 @@ public class DetectActivity extends BaseActivity {
                     maxPos = i;
                 }
             }
-            String[] classes = {"Acne", "Eczema","Melanocytic Nevi","Melanoma","Normal Skin","Psoriasis"};
-            result.setText(classes[maxPos]);
+            Float undefined = 0.7f;
+            if (maxConfidence<undefined){
 
-            if(classes[maxPos].equals("Normal Skin")){
-                binding.resultCause.setText(R.string.normal_skin_cause);
-                binding.resultSymptoms.setText(R.string.normal_skin_symptoms);
-                binding.resultTreatment.setText(R.string.normal_skin_treatment);
-            } else if (classes[maxPos].equals("Melanoma")) {
-                binding.resultCause.setText(R.string.melanoma_cause);
-            }
-            else {
-                binding.resultCause.setText(R.string.failed);
-                binding.resultSymptoms.setText(R.string.failed);
-                binding.resultTreatment.setText(R.string.failed);
-            }
+                result.setText("Cannot recognized Please Try Again");
+                binding.resultCause.setText("Cannot recognized Please Try Again");
+                binding.resultTreatment.setText("Cannot recognized Please Try Again");
+                binding.resultTreatment.setText("Cannot recognized Please Try Again");
+            }else {
+                String[] classes = {"Acne", "Eczema", "Melanocytic Nevi", "Melanoma", "Normal Skin", "Psoriasis"};
+                result.setText(classes[maxPos]);
 
+                if (classes[maxPos].equals("Normal Skin")) {
+                    binding.resultCause.setText(R.string.normal_skin_cause);
+                    binding.resultSymptoms.setText(R.string.normal_skin_symptoms);
+                    binding.resultTreatment.setText(R.string.normal_skin_treatment);
+                } else if (classes[maxPos].equals("Melanoma")) {
+                    binding.resultCause.setText(R.string.melanoma_cause);
+                } else {
+                    binding.resultCause.setText(R.string.failed);
+                    binding.resultSymptoms.setText(R.string.failed);
+                    binding.resultTreatment.setText(R.string.failed);
+                }
+            }
             // Releases model resources if no longer used.
             model.close();
         } catch (IOException e) {
-            // TODO Handle the exception
+            e.printStackTrace();
         }
 
     }

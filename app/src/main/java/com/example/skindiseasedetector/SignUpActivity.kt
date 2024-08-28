@@ -23,6 +23,7 @@ class SignUpActivity : BaseActivity() {
         setContentView(binding?.root)
         auth = Firebase.auth
         database = Firebase.database
+        notConnected()
 
 
         binding?.textViewAR?.setOnClickListener {

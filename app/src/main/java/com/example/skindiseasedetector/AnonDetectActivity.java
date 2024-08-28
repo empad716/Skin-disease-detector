@@ -38,7 +38,7 @@ public class AnonDetectActivity extends BaseActivity {
         setContentView(binding.getRoot());
         result = binding.result;
         imageView = binding.image;
-
+        notConnected();
         Bitmap image = getIntent().getParcelableExtra("imageBitmap");
         imageView.setImageBitmap(image);
         image = Bitmap.createScaledBitmap(image, imageSize, imageSize, false);

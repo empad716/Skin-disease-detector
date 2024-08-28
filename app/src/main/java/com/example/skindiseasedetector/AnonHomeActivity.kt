@@ -40,20 +40,29 @@ class AnonHomeActivity : BaseActivity() {
         binding = ActivityAnonHomeBinding.inflate(layoutInflater)
         setContentView(binding?.root)
         auth = Firebase.auth
+        notConnected()
         //findViewById<TextView>(R.id.textViewAnon).text = auth.currentUser?.uid
         onBackPressedDispatcher.addCallback(this,object : OnBackPressedCallback(true){
             override fun handleOnBackPressed() {
-                showProgressBar()
+
                 builder = AlertDialog.Builder(this@AnonHomeActivity)
                 builder.setTitle("Sign Out")
                 builder.setMessage("Are you sure you want to Sign Out?")
                 builder.setCancelable(true)
                 builder.setPositiveButton("YES"){dialog,id->
                     if (auth.currentUser!=null){
-                        auth.signOut()
-                        startActivity(Intent(this@AnonHomeActivity,LoginSelectionActivity::class.java))
-                        overridePendingTransition(R.anim.slide_in_left,R.anim.slide_out_right)
-                        hideProgressBar()
+                        auth.currentUser?.delete()?.addOnCompleteListener { task->
+                            if (task.isSuccessful){
+                                showProgressBar()
+                                auth.signOut()
+                                hideProgressBar()
+                                startActivity(Intent(this@AnonHomeActivity,LoginSelectionActivity::class.java))
+                                this@AnonHomeActivity.overridePendingTransition(R.anim.slide_in_left,R.anim.slide_out_right)
+                            }else{
+                                showToast(this@AnonHomeActivity,"Please Check Your Connection")
+                            }
+
+                        }
                     }
                 }
                 builder.setNegativeButton("NO"){dialog,id->
@@ -99,7 +108,7 @@ class AnonHomeActivity : BaseActivity() {
                 else -> false
             }
         }
-        replaceFragment(HomeFragment())
+        replaceFragment(AnonHomeFragment())
     }
     private fun replaceFragment(fragment: Fragment){
         val user = FirebaseAuth.getInstance().currentUser

@@ -19,7 +19,7 @@ import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
-public class TutorialActivity extends AppCompatActivity {
+public class TutorialActivity extends BaseActivity {
     ActivityTutorialBinding binding =null;
     ViewPager viewPager;
     TabLayout tabLayout;
@@ -34,7 +34,7 @@ public class TutorialActivity extends AppCompatActivity {
         setContentView(binding.getRoot());
 
         binding.tabs.setupWithViewPager(binding.viewPager);
-
+        notConnected();
         stringList = new ArrayList<>();
         stringList.add("https://firebasestorage.googleapis.com/v0/b/skin-disease-detector-1939c.appspot.com/o/448530351_1926298337787102_7763093319481730867_n.jpg?alt=media&token=15de4620-84f1-48b2-99c4-dde98a490c55");
         stringList.add("https://firebasestorage.googleapis.com/v0/b/skin-disease-detector-1939c.appspot.com/o/448688048_991774765930828_1276809908337420817_n.jpg?alt=media&token=5b49eeba-a7c8-45ab-8c53-b6cd0ca44232");
