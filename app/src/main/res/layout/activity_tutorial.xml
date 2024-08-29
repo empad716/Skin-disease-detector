@@ -7,7 +7,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".TutorialActivity"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:background="#ADDFDE">
 
     <androidx.viewpager.widget.ViewPager
         android:id="@+id/viewPager"
@@ -17,17 +18,17 @@
         android:layout_marginTop="60dp"
         />
 
+
+
     <com.google.android.material.tabs.TabLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/tabs"
-        tools:ignore="MissingConstraint"
         app:tabBackground="@drawable/indicator"
         app:tabGravity="center"
         app:tabIndicator="@null"
-        app:tabIndicatorGravity="center"/>
-
-
+        app:tabIndicatorGravity="center"
+        android:background="?android:attr/selectableItemBackground"/>
 
 
 </LinearLayout>

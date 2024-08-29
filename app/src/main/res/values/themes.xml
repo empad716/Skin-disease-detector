@@ -26,11 +26,11 @@
         <item name="android:backgroundDimAmount">0.7</item>
     </style>
     <style name="MaterialAlertDialog_Rounded" parent="@style/ThemeOverlay.MaterialComponents.MaterialAlertDialog">
-        <item name="shapeAppearanceOverlay"></item>
+        <item name="shapeAppearanceOverlay">@style/DialogCorner</item>
     </style>
     <style name="DialogCorner">
         <item name="cornerFamily">rounded</item>
-        <item name="cornerSize">16dp</item>
+        <item name="cornerSize">20dp</item>
     </style>
 
 </resources>

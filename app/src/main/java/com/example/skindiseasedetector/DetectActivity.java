@@ -230,9 +230,9 @@ public class DetectActivity extends BaseActivity {
             for(int i = 0; i < imageSize; i ++){
                 for(int j = 0; j < imageSize; j++){
                     int val = intValues[pixel++]; // RGB
-                    byteBuffer.putFloat(((val >> 16) & 0xFF) * (1.f / 1));
-                    byteBuffer.putFloat(((val >> 8) & 0xFF) * (1.f / 1));
-                    byteBuffer.putFloat((val & 0xFF) * (1.f / 1));
+                    byteBuffer.putFloat(((val >> 16) & 0xFF) * (1.f /255.f));
+                    byteBuffer.putFloat(((val >> 8) & 0xFF) * (1.f / 255.f));
+                    byteBuffer.putFloat((val & 0xFF) * (1.f / 255.f));
                 }
             }
 
@@ -255,21 +255,21 @@ public class DetectActivity extends BaseActivity {
             if (maxConfidence<undefined){
 
                 result.setText("Cannot recognized Please Try Again");
-                binding.resultCause.setText("Cannot recognized Please Try Again");
-                binding.resultTreatment.setText("Cannot recognized Please Try Again");
+                binding.resultCause.setText("max Confidence:  "+maxConfidence);
+                binding.resultTreatment.setText("undefined: "+undefined);
                 binding.resultTreatment.setText("Cannot recognized Please Try Again");
             }else {
                 String[] classes = {"Acne", "Eczema", "Melanocytic Nevi", "Melanoma", "Normal Skin", "Psoriasis"};
                 result.setText(classes[maxPos]);
 
                 if (classes[maxPos].equals("Normal Skin")) {
-                    binding.resultCause.setText(R.string.normal_skin_cause);
+                    binding.resultCause.setText("max Confidence:  "+maxConfidence);
                     binding.resultSymptoms.setText(R.string.normal_skin_symptoms);
                     binding.resultTreatment.setText(R.string.normal_skin_treatment);
                 } else if (classes[maxPos].equals("Melanoma")) {
-                    binding.resultCause.setText(R.string.melanoma_cause);
+                    binding.resultCause.setText("max Confidence:  "+maxConfidence);
                 } else {
-                    binding.resultCause.setText(R.string.failed);
+                    binding.resultCause.setText("max Confidence:  "+maxConfidence);
                     binding.resultSymptoms.setText(R.string.failed);
                     binding.resultTreatment.setText(R.string.failed);
                 }
