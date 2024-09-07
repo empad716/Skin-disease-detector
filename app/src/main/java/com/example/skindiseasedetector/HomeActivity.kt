@@ -23,6 +23,13 @@ import androidx.fragment.app.Fragment
 import android.content.Context
 import android.graphics.ImageDecoder
 import android.os.Build
+import android.os.Handler
+import android.os.Looper
+import android.util.Log
+import android.view.MotionEvent
+import android.widget.ImageView
+import android.widget.TextView
+import com.bumptech.glide.Glide
 import com.example.skindiseasedetector.databinding.ActivityHomeBinding
 import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
@@ -32,8 +39,15 @@ import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import java.io.ByteArrayOutputStream
 import java.io.IOException
+import kotlin.coroutines.resume
+import kotlin.coroutines.resumeWithException
+import kotlin.coroutines.suspendCoroutine
 
 
 class HomeActivity : BaseActivity() {
@@ -42,6 +56,10 @@ class HomeActivity : BaseActivity() {
     private lateinit var users: Users
     private lateinit var uid: String
     private var binding:ActivityHomeBinding? = null
+    private lateinit var pb:Dialog
+    private val idleHandler = Handler(Looper.getMainLooper())
+    private var idleRunnable: Runnable? = null
+    private val idleTimeout = 3 *60 *1000L
 
     private lateinit var builder: AlertDialog.Builder
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -62,10 +80,15 @@ class HomeActivity : BaseActivity() {
                 builder.setPositiveButton("YES"){dialog,id->
                     showProgressBar()
                     if (auth.currentUser!=null){
-                        auth.signOut()
-                        hideProgressBar()
-                        startActivity(Intent(this@HomeActivity,LoginSelectionActivity::class.java))
-                        overridePendingTransition(R.anim.slide_in_left,R.anim.slide_out_right)
+                        if (isConnected()){
+                            auth.signOut()
+                            hideProgressBar()
+                            startActivity(Intent(this@HomeActivity,LoginSelectionActivity::class.java))
+                            overridePendingTransition(R.anim.slide_in_left,R.anim.slide_out_right)
+
+                        }else{
+                            showToast(this@HomeActivity,"Please Check Your Connection")
+                        }
 
                     }
                 }
@@ -77,11 +100,9 @@ class HomeActivity : BaseActivity() {
                 hideProgressBar()
             }
         })
-
         if(uid.isNotEmpty()){
-           getUserData()
+            getUserDataWithRetry()
         }
-
         binding?.signOutBtn?.setOnClickListener{
             showProgressBar()
            if (auth.currentUser!=null){
@@ -99,7 +120,7 @@ class HomeActivity : BaseActivity() {
                      true
                  }
                 R.id.btn_maps ->{
-                    replaceFragment(MapsFragment())
+                    replaceFragment(GMapsFragment())
                     true
                 }
                 R.id.btn_add ->{
@@ -167,7 +188,6 @@ class HomeActivity : BaseActivity() {
 
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-
         if (resultCode == RESULT_OK) {
             if (requestCode ==3){
                 var image = data?.extras?.get("data") as Bitmap
@@ -191,40 +211,64 @@ class HomeActivity : BaseActivity() {
         }
         super.onActivityResult(requestCode, resultCode, data)
     }
-
-
-
     private fun navigateToImageDisplayActivity(imageBitmap: Bitmap) {
-        showProgressBar()
         val intent = Intent(this, DetectActivity::class.java).apply {
             putExtra("imageBitmap", imageBitmap) }
-
-
         startActivity(intent)
-        hideProgressBar()
     }
     private fun navigateToImageDisplayActivityUri(imageUri: Uri){
         val intent = Intent(this,DetectActivity::class.java).apply {
             putExtra("imageUri",imageUri)
         }
         startActivity(intent)
-
-
     }
-    private fun getUserData() {
-        databaseReference.child(uid).addValueEventListener(object : ValueEventListener{
-            override fun onDataChange(snapshot: DataSnapshot) {
-                users = snapshot.getValue(Users::class.java)!!
-                binding!!.textViewName.setText(users.fullname)
+    private fun getUserDataWithRetry(retryCount: Int = 3){
+        showProgress()
+        CoroutineScope(Dispatchers.Main).launch {
+            retryFirebaseOperation(retryCount)
+        }
+    }
+    private suspend fun retryFirebaseOperation(retries: Int) {
+        var currentAttempt = 0
+        var delayDuration = 1000L
 
+        while (currentAttempt<retries){
+            try {
+                val result = getUserDataFromDatabase()
+                if (result != null){
+                    processUserData(result)
+                    hideProgress()
+                    return
+                }
+            }catch (e:Exception){
+                Log.e("FirebaseRetry","Attempt ${currentAttempt +1}failed: ${e.message}")
+            }
+            delay(delayDuration)
+            delayDuration *= 2
+            currentAttempt++
+        }
+        hideProgress()
+        showToast(this,"Failed to Retrieve data after $retries attempt.")
+        auth.signOut()
+    }
+    private suspend fun getUserDataFromDatabase():Users? = suspendCoroutine { continuation ->
+        databaseReference.child(uid).addListenerForSingleValueEvent(object :ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                val users = snapshot.getValue(Users::class.java)
+                continuation.resume(users)
             }
 
             override fun onCancelled(error: DatabaseError) {
-                TODO("Not yet implemented")
+                continuation.resumeWithException(Exception(error.message))
+
             }
 
         })
     }
+    private fun processUserData(users: Users){
+        binding!!.textViewName.setText(users.fullname)
+    }
+
     private fun replaceFragment(fragment: Fragment){
         val user = FirebaseAuth.getInstance().currentUser
         val bundle = Bundle()
@@ -233,6 +277,48 @@ class HomeActivity : BaseActivity() {
         supportFragmentManager.beginTransaction().replace(R.id.frame_container,fragment).commit()
     }
 
+    fun showProgress() {
+        pb= Dialog(this)
+        pb.setContentView(R.layout.progress_bar)
+        pb.setCancelable(false)
+        pb.show()
+        if (!isConnected()){
+            pb.hide()
+            showToast(this,"Please Check your Connection")
+        }
+    }
 
+    fun hideProgress() {
+            pb.hide()
+    }
 
+    override fun onResume() {
+        super.onResume()
+        startIdleTimer()
+    }
+
+    override fun onPause() {
+        super.onPause()
+        stopIdleTimer()
+    }
+    private fun startIdleTimer(){
+        idleRunnable = Runnable{
+            getUserDataWithRetry()
+        }
+        idleHandler.postDelayed(idleRunnable!!,idleTimeout)
+    }
+    private fun stopIdleTimer(){
+        idleRunnable?.let {
+            idleHandler.removeCallbacks(it)
+        }
+    }
+    private fun resetIdleTimer(){
+        stopIdleTimer()
+        startIdleTimer()
+    }
+
+    override fun onTouchEvent(event: MotionEvent?): Boolean {
+        resetIdleTimer()
+        return super.onTouchEvent(event)
+    }
 }

@@ -112,6 +112,7 @@ public class InfoActivity extends BaseActivity {
                             if (userData!=null){
                                 String imageUrl = userData.getImageUrl();
                                 snapshot.getRef().removeValue();
+                                showToast(InfoActivity.this,"Delete Successfully");
                                 hideProgressBar();
                                 if (imageUrl !=null && !imageUrl.isEmpty()){
                                     deleteImageFromStorage(imageUrl);
@@ -135,7 +136,7 @@ public class InfoActivity extends BaseActivity {
 
                     @Override
                    public void onCancelled(@NonNull DatabaseError error) {
-                        Toast.makeText(InfoActivity.this,"Failed to delete data",Toast.LENGTH_SHORT).show();
+                        Toast.makeText(InfoActivity.this,"Failed to delete data "+error.getMessage(),Toast.LENGTH_SHORT).show();
                    }
                 });
            }

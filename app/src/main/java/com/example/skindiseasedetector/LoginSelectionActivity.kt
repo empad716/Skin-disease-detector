@@ -58,11 +58,14 @@ class LoginSelectionActivity : BaseActivity() {
             signInWithGoogle()
         }
 
-         val auth = Firebase.auth
-        if(auth.currentUser != null){
-            startActivity(Intent(this,HomeActivity::class.java))
-            finish()
-        }
+            val auth = Firebase.auth
+            if(auth.currentUser != null) {
+                startActivity(Intent(this, HomeActivity::class.java))
+                finish()
+            }
+
+
+
 
         binding?.anonSignIn?.setOnClickListener{
             anonymousAuth()

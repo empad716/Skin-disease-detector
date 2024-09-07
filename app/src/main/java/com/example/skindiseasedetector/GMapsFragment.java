@@ -1,17 +1,23 @@
 package com.example.skindiseasedetector;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
-import androidx.fragment.app.FragmentActivity;
+import androidx.fragment.app.Fragment;
 
 import android.Manifest;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
+import com.example.skindiseasedetector.databinding.ActivityMapsBinding;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
@@ -23,34 +29,61 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.example.skindiseasedetector.databinding.ActivityMapsBinding;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
-public class
-MapsActivity extends FragmentActivity implements OnMapReadyCallback {
-
+public class GMapsFragment extends Fragment {
     private GoogleMap mMap;
-    private ActivityMapsBinding binding;
     private FusedLocationProviderClient fusedLocationProviderClient;
     private static final int Request_code = 101;
     private double lat,lng;
-    ImageButton derma;
+    Button derma;
+    private OnMapReadyCallback callback = new OnMapReadyCallback() {
+
+        /**
+         * Manipulates the map once available.
+         * This callback is triggered when the map is ready to be used.
+         * This is where we can add markers or lines, add listeners or move the camera.
+         * In this case, we just add a marker near Sydney, Australia.
+         * If Google Play services is not installed on the device, the user will be prompted to
+         * install it inside the SupportMapFragment. This method will only be triggered once the
+         * user has installed Google Play services and returned to the app.
+         */
+        @Override
+        public void onMapReady(GoogleMap googleMap) {
+        mMap = googleMap;
+        }
+    };
+
+    @Nullable
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+    public View onCreateView(@NonNull LayoutInflater inflater,
+                             @Nullable ViewGroup container,
+                             @Nullable Bundle savedInstanceState) {
+        View view =  inflater.inflate(R.layout.fragment_g_maps, container, false);
 
-        binding = ActivityMapsBinding.inflate(getLayoutInflater());
-        setContentView(binding.getRoot());
-        derma = binding.derma;
+        return view;
+    }
 
-        fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this.getApplicationContext());
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
 
-        // Obtain the SupportMapFragment and get notified when the map is ready to be used.
-        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
-                .findFragmentById(R.id.map);
-        mapFragment.getMapAsync(this);
+        fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(getActivity().getApplicationContext());
 
+        SupportMapFragment mapFragment =
+                (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map);
+        if (mapFragment != null) {
+            mapFragment.getMapAsync(callback);
+        }
+        FloatingActionButton currentLocation = view.findViewById(R.id.currentLocation);
+        currentLocation.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {getCurrentLocation();}
+        });
+
+        derma = view.findViewById(R.id.derma);
         derma.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -68,38 +101,16 @@ MapsActivity extends FragmentActivity implements OnMapReadyCallback {
 
                 FetchData fetchData = new FetchData();
                 fetchData.execute(dataFetch);
-
-            }
-        });
-    }
-
-    /**
-     * Manipulates the map once available.
-     * This callback is triggered when the map is ready to be used.
-     * This is where we can add markers or lines, add listeners or move the camera. In this case,
-     * we just add a marker near Sydney, Australia.
-     * If Google Play services is not installed on the device, the user will be prompted to install
-     * it inside the SupportMapFragment. This method will only be triggered once the user has
-     * installed Google Play services and returned to the app.
-     */
-    @Override
-    public void onMapReady(GoogleMap googleMap) {
-        mMap = googleMap;
-        getCurrentLocation();
-        binding.currentLocation.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                getCurrentLocation();
             }
         });
 
     }
     private void getCurrentLocation(){
         if (ActivityCompat.checkSelfPermission(
-                this, Manifest.permission.ACCESS_FINE_LOCATION)!= PackageManager.PERMISSION_GRANTED
-                && ActivityCompat.checkSelfPermission(this,Manifest.permission.ACCESS_COARSE_LOCATION)
+                getActivity(), android.Manifest.permission.ACCESS_FINE_LOCATION)!= PackageManager.PERMISSION_GRANTED
+                && ActivityCompat.checkSelfPermission(getActivity(), android.Manifest.permission.ACCESS_COARSE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED){
-            ActivityCompat.requestPermissions(this,new String[]{Manifest.permission.ACCESS_FINE_LOCATION},Request_code);
+            ActivityCompat.requestPermissions(getActivity(),new String[]{Manifest.permission.ACCESS_FINE_LOCATION},Request_code);
             return;
         }
         LocationRequest locationRequest = LocationRequest.create();
@@ -109,16 +120,16 @@ MapsActivity extends FragmentActivity implements OnMapReadyCallback {
         LocationCallback locationCallback = new LocationCallback(){
             @Override
             public void onLocationResult(LocationResult locationResult) {
-                Toast.makeText(getApplicationContext(), "location result is="+locationResult, Toast.LENGTH_SHORT).show();
+                Log.d("GMapsFragment","location result is="+locationResult);
 
                 if ( locationResult== null){
-                    Toast.makeText(getApplicationContext(), "Current location is null", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getActivity(), "Current location is null", Toast.LENGTH_SHORT).show();
 
                     return;
                 }
                 for (Location location:locationResult.getLocations()){
                     if (location!=null){
-                        Toast.makeText(getApplicationContext(), "Current location is"+location.getLongitude()+"  "+location.getLatitude(), Toast.LENGTH_SHORT).show();
+                        Log.e("GMapsFragment","Current location is"+location.getLongitude()+"  "+location.getLatitude());
 
                     }
                 }
@@ -129,25 +140,24 @@ MapsActivity extends FragmentActivity implements OnMapReadyCallback {
         task.addOnSuccessListener(new OnSuccessListener<Location>() {
             @Override
             public void onSuccess(Location location) {
-            if (location!=null){
-                lat = location.getLatitude();
-                lng = location.getLongitude();
+                if (location!=null){
+                    lat = location.getLatitude();
+                    lng = location.getLongitude();
 
-                LatLng latLng = new LatLng(lat,lng);
-                mMap.addMarker(new MarkerOptions().position(latLng).title("current location"));
-                mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
-                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng,15));
-            }
+                    LatLng latLng = new LatLng(lat,lng);
+                    mMap.addMarker(new MarkerOptions().position(latLng).title("current location"));
+                    mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
+                    mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng,15));
+                }
             }
         });
     }
-
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         switch (requestCode){
             case Request_code:
                 if (grantResults.length>0 && grantResults[0]== PackageManager.PERMISSION_GRANTED){
-                     getCurrentLocation();
+                    getCurrentLocation();
                 }
         }
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);

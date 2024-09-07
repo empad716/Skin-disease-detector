@@ -8,6 +8,7 @@ import android.content.Context
 import android.content.Intent
 import android.net.ConnectivityManager
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -27,6 +28,13 @@ import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import de.hdodenhof.circleimageview.CircleImageView
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import kotlin.coroutines.resume
+import kotlin.coroutines.resumeWithException
+import kotlin.coroutines.suspendCoroutine
 
 
 class ProfileFragment : BaseFragment(){
@@ -52,7 +60,7 @@ class ProfileFragment : BaseFragment(){
         uid = auth.currentUser?.uid.toString()
         databaseReference = FirebaseDatabase.getInstance().getReference("users")
         if(uid.isNotEmpty()){
-            getUserData()
+            getUserDataWithRetry()
         }
 
         signOut.setOnClickListener {
@@ -68,6 +76,8 @@ class ProfileFragment : BaseFragment(){
                         hideProgressBar()
                         startActivity(Intent(activity,LoginSelectionActivity::class.java))
                         activity?.overridePendingTransition(R.anim.slide_in_left,R.anim.slide_out_right)
+                    }else{
+                        showToast("Please Check your Connection")
                     }
 
                 }
@@ -86,34 +96,102 @@ class ProfileFragment : BaseFragment(){
             activity?.overridePendingTransition(R.anim.slide_in_right,R.anim.slide_out_left)
         }
         about.setOnClickListener{
-            startActivity(Intent(activity,FourthActivity::class.java))
+            startActivity(Intent(activity,ThirdMapsActivity::class.java))
         }
 
         return view
     }
 
+    private fun getUserDataWithRetry(retryCount: Int = 3){
+        CoroutineScope(Dispatchers.Main).launch {
+            retryFirebaseOperation(retryCount)
+        }
+    }
+
+    private suspend fun retryFirebaseOperation(retries: Int) {
+        var currentAttempt = 0
+        var delayDuration = 1000L
+
+        while (currentAttempt<retries){
+            try {
+                val result = getUserDataFromDatabase()
+                if (result != null){
+                    processUserData(result)
+                    return
+                }
+            }catch (e:Exception){
+                Log.e("FirebaseRetry","Attempt ${currentAttempt +1}failed: ${e.message}")
+            }
+            delay(delayDuration)
+            delayDuration *= 2
+            currentAttempt++
+        }
+        showToast("Failed to Retrieve data after $retries attempt.")
+        auth.signOut()
+    }
+
+    private suspend fun getUserDataFromDatabase():Users? = suspendCoroutine { continuation ->
+        databaseReference.child(uid).addListenerForSingleValueEvent(object :ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                val users = snapshot.getValue(Users::class.java)
+                continuation.resume(users)
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+               continuation.resumeWithException(Exception(error.message))
+
+            }
+
+        })
+    }
+    private fun processUserData(users: Users){
+        val text = view?.findViewById<TextView>(R.id.textViewName)
+        if (users.username.isNullOrBlank()){
+            text?.setText(users.fullname)
+        }else{
+            text?.setText(users.username)
+        }
+        val img = view?.findViewById<ImageView>(R.id.profilePicture)
+        Glide.with(this@ProfileFragment)
+                .load(users.imageUrl)
+                .placeholder(R.drawable.profile_picture)
+                .circleCrop()
+                .into(img!!)
+
+    }
 
     private fun getUserData() {
+
         databaseReference.child(uid).addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
-                users = snapshot.getValue(Users::class.java)!!
-                val text = view?.findViewById<TextView>(R.id.textViewName)
-                if (users.username.isNullOrBlank()){
-                    text?.setText(users.fullname)
+                if (snapshot.exists()){
+                    users = snapshot.getValue(Users::class.java)!!
+                    val text = view?.findViewById<TextView>(R.id.textViewName)
+                    if (users.username.isNullOrBlank()){
+                        text?.setText(users.fullname)
+                    }else{
+                        text?.setText(users.username)
+                    }
+                    val img = view!!.findViewById<ImageView>(R.id.profilePicture)
+                    Glide.with(this@ProfileFragment)
+                        .load(users.imageUrl)
+                        .placeholder(R.drawable.profile_picture)
+                        .circleCrop()
+                        .into(img)
                 }else{
-                    text?.setText(users.username)
+                    auth.signOut()
+                    startActivity(Intent(activity,LoginSelectionActivity::class.java))
+                    activity?.overridePendingTransition(R.anim.slide_in_left,R.anim.slide_out_right)
+                    showToast("Please Check Your Connection")
                 }
-                val img = view!!.findViewById<ImageView>(R.id.profilePicture)
-                Glide.with(this@ProfileFragment)
-                    .load(users.imageUrl)
-                    .placeholder(R.drawable.profile_picture)
-                    .circleCrop()
-                    .into(img)
 
             }
 
             override fun onCancelled(error: DatabaseError) {
-                TODO("Not yet implemented")
+                auth.signOut()
+                startActivity(Intent(activity,LoginSelectionActivity::class.java))
+                activity?.overridePendingTransition(R.anim.slide_in_left,R.anim.slide_out_right)
+                showToast("Failed to Retrieve data: ${error.message}")
             }
 
         })

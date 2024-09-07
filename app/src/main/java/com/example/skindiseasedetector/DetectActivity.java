@@ -78,23 +78,26 @@ public class DetectActivity extends BaseActivity {
         Uri uri = getIntent().getParcelableExtra("imageUri");
         showProgressBar();
         notConnected();
-        if (image!=null){
-            imageView.setImageBitmap(image);
-             image = Bitmap.createScaledBitmap(image,imageSize,imageSize,false);
-            classifyImage(image);
-            hideProgressBar();
-        }else if(uri !=null){
-            imageView.setImageURI(uri);
-            try {
-                 image = MediaStore.Images.Media.getBitmap(getContentResolver(),uri);
+        if (auth.getCurrentUser()!=null){
+            if (image!=null){
+                imageView.setImageBitmap(image);
                 image = Bitmap.createScaledBitmap(image,imageSize,imageSize,false);
-            }catch (IOException e){
-                // TODO Handle the exception
-            }
-           classifyImage(image);
-            hideProgressBar();
+                classifyImage(image);
+                hideProgressBar();
+            }else if(uri !=null){
+                imageView.setImageURI(uri);
+                try {
+                    image = MediaStore.Images.Media.getBitmap(getContentResolver(),uri);
+                    image = Bitmap.createScaledBitmap(image,imageSize,imageSize,false);
+                }catch (IOException e){
+                    // TODO Handle the exception
+                }
+                classifyImage(image);
+                hideProgressBar();
 
+            }
         }
+
 
 
         binding.cancel.setOnClickListener(new View.OnClickListener() {
@@ -118,7 +121,7 @@ public class DetectActivity extends BaseActivity {
             @Override
             public void onClick(View v) {
                     uploadImage(finalImage);
-                saveIntent();
+
             }
         });
 
@@ -128,15 +131,15 @@ public class DetectActivity extends BaseActivity {
 
 
     private void uploadImage(Bitmap bitmap) {
-
         showProgressBar();
        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-       bitmap.compress(Bitmap.CompressFormat.JPEG,100,baos);
+       bitmap.compress(Bitmap.CompressFormat.PNG,100,baos);
         byte[] data = baos.toByteArray();
+
 
       FirebaseStorage storage = FirebaseStorage.getInstance();
        StorageReference storageRef = storage.getReference();
-        StorageReference imageRef= storageRef.child("images/"+auth.getCurrentUser().getUid()+"/"+ dateTime+".jpg");
+        StorageReference imageRef= storageRef.child("images/"+auth.getCurrentUser().getUid()+"/"+ dateTime+".png");
 
         UploadTask uploadTask= imageRef.putBytes(data);
         uploadTask.addOnSuccessListener(taskSnapshot -> {
@@ -145,10 +148,11 @@ public class DetectActivity extends BaseActivity {
 
                 Log.d("FirebaseStorage","Download URL:" +downloadUrl);
                saveImageUrl(downloadUrl);
-               hideProgressBar();
             });
         }).addOnFailureListener(exception ->{
+            showToast(this,"Please Check Your Connection");
             Log.e("Firebase","Upload Failed", exception);
+            hideProgressBar();
         });
 
     }
@@ -189,8 +193,13 @@ public class DetectActivity extends BaseActivity {
                      if (task.isSuccessful()){
                          Log.d("RealtimeDatabase","Image URl saved successfully");
                          showToast(DetectActivity.this,"Saved Successfully");
+                         hideProgressBar();
+                         saveIntent();
+
                      }else {
                          Log.e("RealtimeDatabase","Failed to save image",task.getException());
+                         showToast(DetectActivity.this,"Saving Failed");
+                         hideProgressBar();
                      }
                  });
              }

@@ -5,6 +5,7 @@ import android.app.Dialog
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.drawable.BitmapDrawable
+import android.media.Image
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.os.Build
@@ -14,6 +15,7 @@ import android.os.Looper
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.ImageView
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AlertDialog
@@ -35,7 +37,7 @@ open class BaseActivity : AppCompatActivity() {
             .setView(R.layout.internet_connection)
             .setCancelable(false)
             .create()
-    val networkManager = NetworkManager(this)
+        val networkManager = NetworkManager(this)
         networkManager.observe(this){
             if (!it){
                 if (!dialog.isShowing)
@@ -46,8 +48,6 @@ open class BaseActivity : AppCompatActivity() {
 
             }
         }
-
-
     }
     fun showProgressBar() {
         pb= Dialog(this)
@@ -69,7 +69,7 @@ open class BaseActivity : AppCompatActivity() {
     fun showToast(activity: Activity, msg:String) {
         Toast.makeText(activity,msg,Toast.LENGTH_SHORT).show()
     }
-     private fun isConnected():Boolean{
+     fun isConnected():Boolean{
         val connectivityManager = this.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
          if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M){
              val network = connectivityManager.activeNetwork ?:return false

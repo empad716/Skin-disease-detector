@@ -4,10 +4,13 @@ import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
+import android.app.Dialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.provider.MediaStore;
 import android.text.TextUtils;
 import android.util.Log;
@@ -41,8 +44,13 @@ import java.time.format.DateTimeFormatter;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
+import java.util.concurrent.Executor;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import de.hdodenhof.circleimageview.CircleImageView;
+import kotlinx.coroutines.CoroutineScope;
+import kotlinx.coroutines.Dispatchers;
 
 public class EditAccountActivity extends BaseActivity {
     ActivityEditAccountBinding binding =null;
@@ -50,6 +58,7 @@ public class EditAccountActivity extends BaseActivity {
     String uid;
     Users users;
     FirebaseAuth auth;
+    Dialog pb;
     ImageButton uploadImage;
     CircleImageView profilePicture;
     Uri image=null;
@@ -63,6 +72,10 @@ public class EditAccountActivity extends BaseActivity {
         }
     });;
     private static final int REQUEST_CODE_READ_EXTERNAL_STORAGE = 1;
+    private static final int MAX_RETRY_COUNT =3;
+    private static final long INITIAL_DELAY_MS = 1000L;
+    private ExecutorService executorService = Executors.newSingleThreadExecutor();
+    private Handler handler = new Handler(Looper.getMainLooper());
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -73,7 +86,7 @@ public class EditAccountActivity extends BaseActivity {
         uid = auth.getCurrentUser().getUid();
         databaseReference = FirebaseDatabase.getInstance().getReference("users");
         if(uid!=null){
-            getUserData();
+            getUserDataWithRetry();
         }
         notConnected();
         binding.birthDate.setOnClickListener(new View.OnClickListener() {
@@ -278,4 +291,58 @@ public class EditAccountActivity extends BaseActivity {
             }
         });
     }
+
+
+
+    private void getUserDataWithRetry() {
+
+        retryFirebaseOperation(0,INITIAL_DELAY_MS);
+    }
+
+    private void retryFirebaseOperation(final int currentAttempt, final long delayDuration) {
+        if (currentAttempt>= MAX_RETRY_COUNT){
+
+            showToast(this, "Failed to retrive data after"+MAX_RETRY_COUNT+"attempts.");
+            return;
+        }
+        handler.postDelayed(new Runnable() {
+        @Override
+            public void run(){
+            databaseReference.child(uid).addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    if (snapshot.exists()){
+                        Users users = snapshot.getValue(Users.class);
+                        processData(users);
+                    }else {
+                        retryFirebaseOperation(currentAttempt+1,delayDuration*2);
+                    }
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+                    Log.e("FirebaseRetry","Attempt"+ (currentAttempt + 1)+"failed: "+error.getMessage());
+                    retryFirebaseOperation(currentAttempt + 1,delayDuration *2);
+                }
+            });
+        }
+        },delayDuration);
+    }
+    private void processData(Users users){
+        binding.userName.setText(users.getUsername());
+        binding.fullName.setText(users.getFullname());
+        binding.email.setText(users.getEmail());
+        binding.age.setText(users.getAge());
+        binding.birthDate.setText(users.getBirthdate());
+        binding.address.setText(users.getAddress());
+
+
+        Glide.with(getApplicationContext())
+                .load(users.getImageUrl())
+                .placeholder(R.drawable.profile_picture)
+                .circleCrop()
+                .into(binding.profilePicture);
+    }
+
+
 }
