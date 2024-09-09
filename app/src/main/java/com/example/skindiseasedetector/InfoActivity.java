@@ -47,7 +47,6 @@ public class InfoActivity extends BaseActivity {
         setContentView(binding.getRoot());
         notConnected();
 
-
         Intent intent = getIntent();
         String diagnosis = intent.getStringExtra("diagnosis");
         String cause = intent.getStringExtra("cause");
@@ -68,8 +67,8 @@ public class InfoActivity extends BaseActivity {
 
         Glide.with(binding.image.getContext())
                 .load(imageUrl)
-                .placeholder(R.drawable.ic_launcher_foreground)
-                .error(R.drawable.ic_launcher_background)
+                .placeholder(R.drawable.baseline_image)
+                .error(R.drawable.baseline_broken_image)
                 .into(binding.image);
 
 
@@ -91,9 +90,7 @@ public class InfoActivity extends BaseActivity {
 
 
             private void backIntent() {
-                Intent intent1 = new Intent(InfoActivity.this, HomeActivity.class);
-                startActivity(intent1);
-                overridePendingTransition(R.anim.slide_in_left,R.anim.slide_out_right);
+           getOnBackPressedDispatcher().onBackPressed();
             }
 
             private void deleteItemHistory(long timestamp) {

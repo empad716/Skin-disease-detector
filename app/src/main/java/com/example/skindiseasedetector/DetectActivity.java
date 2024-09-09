@@ -66,7 +66,6 @@ public class DetectActivity extends BaseActivity {
         auth = FirebaseAuth.getInstance();
         database = FirebaseDatabase.getInstance();
         uid = auth.getCurrentUser().getUid();
-
         LocalDateTime currentDateTime = LocalDateTime.now();
         DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("hh:mm:ss a");
@@ -90,7 +89,7 @@ public class DetectActivity extends BaseActivity {
                     image = MediaStore.Images.Media.getBitmap(getContentResolver(),uri);
                     image = Bitmap.createScaledBitmap(image,imageSize,imageSize,false);
                 }catch (IOException e){
-                    // TODO Handle the exception
+                    e.printStackTrace();
                 }
                 classifyImage(image);
                 hideProgressBar();
@@ -212,16 +211,15 @@ public class DetectActivity extends BaseActivity {
 
 
     private void saveIntent() {
-
-       Intent intent = new Intent(this, HomeActivity.class);
-       startActivity(intent);
-       overridePendingTransition(R.anim.slide_in_left,R.anim.slide_out_right);
-    }
-
-    private void cancelIntent() {
         Intent intent = new Intent(this, HomeActivity.class);
         startActivity(intent);
         overridePendingTransition(R.anim.slide_in_left,R.anim.slide_out_right);
+
+
+    }
+
+    private void cancelIntent() {
+        getOnBackPressedDispatcher().onBackPressed();
     }
 
     private void classifyImage(Bitmap image) {
@@ -272,13 +270,13 @@ public class DetectActivity extends BaseActivity {
                 result.setText(classes[maxPos]);
 
                 if (classes[maxPos].equals("Normal Skin")) {
-                    binding.resultCause.setText("max Confidence:  "+maxConfidence);
+                    binding.resultCause.setText(R.string.normal_skin_cause);
                     binding.resultSymptoms.setText(R.string.normal_skin_symptoms);
                     binding.resultTreatment.setText(R.string.normal_skin_treatment);
                 } else if (classes[maxPos].equals("Melanoma")) {
-                    binding.resultCause.setText("max Confidence:  "+maxConfidence);
+                    binding.resultCause.setText(R.string.melanoma_cause);
                 } else {
-                    binding.resultCause.setText("max Confidence:  "+maxConfidence);
+                    binding.resultCause.setText(R.string.failed);
                     binding.resultSymptoms.setText(R.string.failed);
                     binding.resultTreatment.setText(R.string.failed);
                 }

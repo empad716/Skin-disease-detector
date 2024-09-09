@@ -69,6 +69,7 @@ class HomeActivity : BaseActivity() {
         setContentView(binding?.root)
         auth = Firebase.auth
         uid = auth.currentUser?.uid.toString()
+
         databaseReference = FirebaseDatabase.getInstance().getReference("users")
         notConnected()
         onBackPressedDispatcher.addCallback(this,object : OnBackPressedCallback(true){
@@ -259,6 +260,7 @@ class HomeActivity : BaseActivity() {
             }
 
             override fun onCancelled(error: DatabaseError) {
+                auth.signOut()
                 continuation.resumeWithException(Exception(error.message))
 
             }

@@ -86,7 +86,8 @@ public class EditAccountActivity extends BaseActivity {
         uid = auth.getCurrentUser().getUid();
         databaseReference = FirebaseDatabase.getInstance().getReference("users");
         if(uid!=null){
-            getUserDataWithRetry();
+           getUserData();
+
         }
         notConnected();
         binding.birthDate.setOnClickListener(new View.OnClickListener() {
@@ -187,8 +188,14 @@ public class EditAccountActivity extends BaseActivity {
                     });
                 }else {
                     String ImageUrl = users.getImageUrl().toString();
-                    saveToRealTimeDB(ImageUrl);
-                    hideProgressBar();
+                    if (ImageUrl != null){
+                        saveToRealTimeDB(ImageUrl);
+                        hideProgressBar();
+                    }
+                    else {
+                        showToast(EditAccountActivity.this,"Error! Please Try Again");
+                    }
+
                 }
 
             }
@@ -222,9 +229,7 @@ public class EditAccountActivity extends BaseActivity {
         binding.back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(EditAccountActivity.this,AccountDetailsActivity.class);
-                startActivity(intent);
-                overridePendingTransition(R.anim.slide_in_left,R.anim.slide_out_right);
+                getOnBackPressedDispatcher().onBackPressed();
             }
         });
     }
