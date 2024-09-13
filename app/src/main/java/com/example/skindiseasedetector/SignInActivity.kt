@@ -20,6 +20,7 @@ class SignInActivity : BaseActivity() {
         setContentView(binding?.root)
         auth = Firebase.auth
         notConnected()
+        fixStatusBar()
         binding?.textViewNR?.setOnClickListener {
          startActivity(Intent(this, SignUpActivity::class.java))
             overridePendingTransition(R.anim.slide_in_right,R.anim.slide_out_left)

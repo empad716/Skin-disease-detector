@@ -41,6 +41,7 @@ class AnonHomeActivity : BaseActivity() {
         setContentView(binding?.root)
         auth = Firebase.auth
         notConnected()
+        fixStatusBar()
         //findViewById<TextView>(R.id.textViewAnon).text = auth.currentUser?.uid
         onBackPressedDispatcher.addCallback(this,object : OnBackPressedCallback(true){
             override fun handleOnBackPressed() {

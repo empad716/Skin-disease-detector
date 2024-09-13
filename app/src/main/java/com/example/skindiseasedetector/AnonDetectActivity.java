@@ -44,7 +44,7 @@ public class AnonDetectActivity extends BaseActivity {
         image = Bitmap.createScaledBitmap(image, imageSize, imageSize, false);
         classifyImage(image);
 
-
+        fixStatusBar();
         binding.cancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) { cancelIntent();

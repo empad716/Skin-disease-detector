@@ -46,7 +46,7 @@ public class InfoActivity extends BaseActivity {
         binding = ActivityInfoBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
         notConnected();
-
+        fixStatusBar();
         Intent intent = getIntent();
         String diagnosis = intent.getStringExtra("diagnosis");
         String cause = intent.getStringExtra("cause");

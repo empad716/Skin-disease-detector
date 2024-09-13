@@ -39,7 +39,7 @@ class AccountDetailsActivity : BaseActivity() {
         binding = ActivityAccountDetailsBinding.inflate(layoutInflater)
         setContentView(binding?.root)
         auth = Firebase.auth
-
+        fixStatusBar()
         uid = auth.currentUser?.uid.toString()
         databaseReference = FirebaseDatabase.getInstance().getReference("users")
         if (uid.isNotEmpty()) {

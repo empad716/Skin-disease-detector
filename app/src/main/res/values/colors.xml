@@ -5,5 +5,11 @@
     <color name="blue">#1A9DF1</color>
     <color name="pink">#DD87E3</color>
     <color name="semi_transparent">#80FFFFFF</color>
+    <color name="PrimaryBlue">#0052CC</color>
+    <color name="PrimaryDirtyWhite">#EEF0F3</color>
+    <color name="SoftWhite">#F4F4F4</color>
+    <color name="NavColor">#E5E2E2</color>
+    <color name="BtnColors">#5f6368</color>
+    <color name="editbgcolor">#B4B2B2</color>
 
 </resources>

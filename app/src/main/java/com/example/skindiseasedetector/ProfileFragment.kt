@@ -96,7 +96,7 @@ class ProfileFragment : BaseFragment(){
             activity?.overridePendingTransition(R.anim.slide_in_right,R.anim.slide_out_left)
         }
         about.setOnClickListener{
-            startActivity(Intent(activity,ThirdMapsActivity::class.java))
+            startActivity(Intent(activity,SecondMapsActivity::class.java))
         }
 
         return view

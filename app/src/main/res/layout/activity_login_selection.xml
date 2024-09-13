@@ -5,70 +5,85 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/welcome"
-    tools:context=".LoginSelectionActivity">
+    android:background="@color/blue"
+    tools:context=".LoginSelectionActivity"
+    android:fitsSystemWindows="true">
 
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/emailSignIn"
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="75dp"
-        android:layout_marginHorizontal="40dp"
-        android:clickable="true"
-        android:text="SIGN IN WITH EMAIL"
-        android:textColor="@color/white"
-        android:textStyle="bold"
-        android:textSize="17dp"
-        app:backgroundTint="@color/blue"
-        app:icon="@drawable/mail_outline"
-        app:iconGravity="start"
-        app:iconPadding="4dp"
-        app:iconSize="30dp"
-        app:iconTint="@color/white"
-        app:layout_constraintBottom_toTopOf="@+id/googleSignIn"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.798" />
-
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/googleSignIn"
-        android:layout_width="match_parent"
-        android:layout_height="75dp"
-        android:layout_marginHorizontal="40dp"
-        android:layout_marginBottom="84dp"
-        android:text="SIGN IN WITH GOOGLE"
-        android:textSize="17dp"
-        android:textColor="@color/white"
-        android:textStyle="bold"
-        app:backgroundTint="@color/blue"
-        app:icon="@drawable/googlelogo"
-        app:iconGravity="start"
-        app:iconPadding="4dp"
-        app:iconSize="30dp"
-        app:iconTint="@color/white"
-        app:layout_constraintBottom_toTopOf="@+id/anonSignIn"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
-
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/anonSignIn"
-        android:layout_width="match_parent"
-        android:layout_height="75dp"
-        android:layout_marginHorizontal="40dp"
-        android:layout_marginBottom="220dp"
-        android:textSize="17dp"
-        android:text="SIGN IN AS GUEST"
-        android:textColor="@color/white"
-        android:textStyle="bold"
-        app:backgroundTint="@color/blue"
-        app:icon="@drawable/person"
-        app:iconGravity="start"
-        app:iconPadding="4dp"
-        app:iconSize="30dp"
-        app:iconTint="@color/white"
+        android:layout_height="wrap_content"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent">
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:layout_marginTop="20dp"
+            android:id="@+id/googleSignIn"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="@string/googlesign"
+            android:textSize="18sp"
+            android:background="@drawable/cstm_btn_bg_loginselection"
+            android:textAllCaps="false"
+            android:textColor="@color/black"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toTopOf="@id/emailSignIn"
+            app:layout_constraintWidth_percent="0.8"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            android:layout_marginBottom="20dp"/>
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/emailSignIn"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="@string/emailsign"
+            android:textSize="18sp"
+            android:background="@drawable/cstm_btn_bg_loginselection"
+            android:textAllCaps="false"
+            android:textColor="@color/black"
+            app:layout_constraintBottom_toTopOf="@id/anonSignIn"
+            app:layout_constraintWidth_percent="0.8"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/googleSignIn"
+            android:layout_marginBottom="20dp"
+            android:backgroundTint="@color/white"/>
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/anonSignIn"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:background="@drawable/cstm_btn_bg_loginselection"
+            android:text="@string/guest"
+            android:textAllCaps="false"
+            android:textColor="@color/black"
+            android:textSize="18sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/emailSignIn"
+            app:layout_constraintWidth_percent="0.8"
+            android:layout_marginBottom="50dp"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="100dp">
+        <ImageView
+            android:id="@+id/logo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:srcCompat="@drawable/logoblue"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"/>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

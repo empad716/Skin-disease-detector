@@ -91,4 +91,15 @@ open class BaseActivity : AppCompatActivity() {
         finish()
         startActivity(intent)
     }
+    fun fixStatusBar(){
+        val decorView = window.decorView
+        decorView.setOnApplyWindowInsetsListener{v,insets ->
+            val left = insets.systemWindowInsetLeft
+            val top = insets.systemWindowInsetTop
+            val right = insets.systemWindowInsetRight
+            val bottom = insets.systemWindowInsetBottom
+            v.setPadding(left,top, right,bottom)
+            insets.consumeSystemWindowInsets()
+        }
+    }
 }

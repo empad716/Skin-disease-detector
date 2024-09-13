@@ -69,7 +69,7 @@ class HomeActivity : BaseActivity() {
         setContentView(binding?.root)
         auth = Firebase.auth
         uid = auth.currentUser?.uid.toString()
-
+        fixStatusBar()
         databaseReference = FirebaseDatabase.getInstance().getReference("users")
         notConnected()
         onBackPressedDispatcher.addCallback(this,object : OnBackPressedCallback(true){

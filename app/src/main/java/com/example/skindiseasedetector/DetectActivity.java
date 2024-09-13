@@ -13,10 +13,12 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
+import android.view.WindowInsets;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import androidx.activity.EdgeToEdge;
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.content.res.AppCompatResources;
@@ -58,7 +60,7 @@ public class DetectActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        EdgeToEdge.enable(this);
+     //   EdgeToEdge.enable(this);
         binding = ActivityDetectBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
         result = binding.result;
@@ -72,7 +74,7 @@ public class DetectActivity extends BaseActivity {
          dateTime = currentDateTime.format(dateFormatter) +" "+ currentDateTime.format(timeFormatter);
          dateTimeData = currentDateTime.format(dateFormatter)+ " "+ currentDateTime.format(DateTimeFormatter.ofPattern("hh:mm a"));
 
-
+        fixStatusBar();
         Bitmap image = getIntent().getParcelableExtra("imageBitmap");
         Uri uri = getIntent().getParcelableExtra("imageUri");
         showProgressBar();

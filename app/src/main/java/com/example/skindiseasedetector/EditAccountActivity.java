@@ -43,7 +43,9 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Locale;
+import java.util.Map;
 import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -89,6 +91,7 @@ public class EditAccountActivity extends BaseActivity {
            getUserData();
 
         }
+        fixStatusBar();
         notConnected();
         binding.birthDate.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -210,8 +213,17 @@ public class EditAccountActivity extends BaseActivity {
                 if(validateForm(userName,fullName,age,birthDate,address)){
                     if (auth.getCurrentUser()!=null){
                         DatabaseReference db = FirebaseDatabase.getInstance().getReference().child("users").child(uid);
-                        users = new Users(userName,fullName,email,age,birthDate,address,uid,downloadUrl);
-                        db.setValue(users).addOnCompleteListener(task -> {
+                       // users = new Users(userName,fullName,email,age,birthDate,address,uid,downloadUrl);
+                        Map<String,Object> userUpdate = new HashMap<>();
+                        userUpdate.put("username",userName);
+                        userUpdate.put("fullname",fullName);
+                        userUpdate.put("email",email);
+                        userUpdate.put("age",age);
+                        userUpdate.put("birthdate",birthDate);
+                        userUpdate.put("address",address);
+                        userUpdate.put("uid",uid);
+                        userUpdate.put("imageUrl",downloadUrl);
+                        db.updateChildren(userUpdate).addOnCompleteListener(task -> {
                             if (task.isSuccessful()){
                                 showToast(EditAccountActivity.this,"Saved Successful");
                             }else {

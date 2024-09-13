@@ -25,7 +25,7 @@ class ForgotPasswordActivity : BaseActivity() {
         binding?.submitBtn?.setOnClickListener{
             resetPassword()
         }
-
+        fixStatusBar()
 
     }
 

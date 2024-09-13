@@ -34,6 +34,11 @@ class LoginSelectionActivity : BaseActivity() {
         enableEdgeToEdge()
         binding = ActivityLoginSelectionBinding.inflate(layoutInflater)
         setContentView(binding?.root)
+
+       fixStatusBar()
+
+
+
         onBackPressedDispatcher.addCallback(this,object : OnBackPressedCallback(true){
             override fun handleOnBackPressed() {
             }

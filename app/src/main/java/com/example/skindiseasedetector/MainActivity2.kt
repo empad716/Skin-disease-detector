@@ -11,7 +11,7 @@ import androidx.core.view.WindowInsetsCompat
 import com.example.skindiseasedetector.databinding.ActivityMain2Binding
 import com.example.skindiseasedetector.databinding.ActivityMainBinding
 
-class MainActivity2 : AppCompatActivity() {
+class MainActivity2 :BaseActivity() {
     private var binding: ActivityMain2Binding? =null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -23,9 +23,9 @@ class MainActivity2 : AppCompatActivity() {
             }
 
         })
-
+        fixStatusBar()
         binding?.button?.setOnClickListener {
-            val intent = Intent(this, MainActivity3::class.java)
+            val intent = Intent(this, LoginSelectionActivity::class.java)
             startActivity(intent)
             overridePendingTransition(R.anim.slide_in_right,R.anim.slide_out_left)
         }

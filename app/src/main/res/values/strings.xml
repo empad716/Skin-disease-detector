@@ -10,7 +10,37 @@
     <string name="melanoma_cause">melanoma nga to</string>
     <string name="failed">Something Went Wrong</string>
     <string name="google_map_api_key">AIzaSyCiFHG1H8XznGaQMWev53Gu3Ll7PPeedaI</string>
-
+    <string name="tomtom_map_api_key">rcjAIcxHgCMNAAvbEufYvEuEg4GrdFUX</string>
     <string name="mapbox_access_token">pk.eyJ1Ijoic2RkMDEwMSIsImEiOiJjbHdhaDdtOG8wZG43MmlvMDZ1OXRtbWRsIn0.90_Xj6ajmBmVYF1wb4MTkg</string>
     <string name="title_activity_maps">MapsActivity</string>
+
+    <string name="continue_txt">Continue</string>
+    <string name="email_txt">Email</string>
+    <string name="full_name">Full Name</string>
+    <string name="passwrod">Password</string>
+    <string name="confirm_pass">Confirm Password</string>
+    <string name="sign_in">Sign In</string>
+    <string name="sign_up">Sign Up</string>
+    <string name="forpass">Forgot Password?</string>
+    <string name="username">Username</string>
+    <string name="age">Age</string>
+    <string name="birthday">Birthday</string>
+    <string name="address">Address</string>
+    <string name="back">Back</string>
+    <string name="googlesign">Sign in with Google</string>
+    <string name="emailsign">Sign in with Email</string>
+    <string name="guest">Sign in as a Guest</string>
+    <string name="profileheader">Profile</string>
+    <string name="edit">Edit</string>
+    <string name="signout">Log Out</string>
+    <string name="next">Next</string>
+    <string name="tag1">YOUR PERSONAL</string>
+    <string name="tag2">SKIN HEALTH</string>
+    <string name="tag3">COMPANION</string>
+    <string name="skip">Skip</string>
+    <string name="tag4">LET YOUR</string>
+    <string name="tag5">CAMERA</string>
+    <string name="tag6">DO THE WORK</string>
+    <string name="tag7">RECOMMENDATION</string>
+    <string name="historyDate">Today</string>
 </resources>

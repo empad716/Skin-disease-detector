@@ -18,13 +18,15 @@
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@drawable/logoblue"
         android:label="Dermalyzer"
-        android:roundIcon="@mipmap/ic_launcher_round"
+        android:roundIcon="@drawable/logoblue"
         android:supportsRtl="true"
         android:theme="@style/Theme.SkinDiseaseDetector"
         tools:targetApi="31">
-
+        <activity
+            android:name=".FifthMapsActivity"
+            android:exported="false" />
         <!--
              TODO: Before you run your application, you need a Google Maps API key.
 
@@ -39,6 +41,7 @@
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyCiFHG1H8XznGaQMWev53Gu3Ll7PPeedaI" />
+
 
         <activity
             android:name=".FourthActivity"
@@ -104,10 +107,6 @@
             android:screenOrientation="portrait" />
         <activity
             android:name=".LoginSelectionActivity"
-            android:exported="false"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name=".MainActivity3"
             android:exported="false"
             android:screenOrientation="portrait" />
         <activity

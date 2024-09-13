@@ -24,7 +24,7 @@ class SignUpActivity : BaseActivity() {
         auth = Firebase.auth
         database = Firebase.database
         notConnected()
-
+        fixStatusBar()
 
         binding?.textViewAR?.setOnClickListener {
             startActivity(Intent(this, SignInActivity::class.java))

@@ -8,5 +8,6 @@ data class Users(
     var birthdate:String?=null,
     var address:String?=null,
     var uid:String? =null,
-    var imageUrl:String?=null
+    var imageUrl:String?=null,
+
 )
