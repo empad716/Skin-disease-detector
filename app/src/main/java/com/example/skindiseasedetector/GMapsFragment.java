@@ -33,12 +33,16 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
-public class GMapsFragment extends Fragment {
+import java.util.ArrayList;
+import java.util.List;
+
+public class    GMapsFragment extends Fragment {
     private GoogleMap mMap;
     private FusedLocationProviderClient fusedLocationProviderClient;
     private static final int Request_code = 101;
     private double lat,lng;
     Button derma;
+    Button dermaClinic;
     private OnMapReadyCallback callback = new OnMapReadyCallback() {
 
         /**
@@ -53,6 +57,16 @@ public class GMapsFragment extends Fragment {
         @Override
         public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
+        enableLocation();
+        }
+
+        private void enableLocation() {
+            if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION)!= PackageManager.PERMISSION_GRANTED
+                    && ActivityCompat.checkSelfPermission(getActivity(),Manifest.permission.ACCESS_COARSE_LOCATION)!=PackageManager.PERMISSION_GRANTED){
+                ActivityCompat.requestPermissions(getActivity(),new String[]{Manifest.permission.ACCESS_FINE_LOCATION},Request_code);
+                return;
+            }
+            mMap.setMyLocationEnabled(true);
         }
     };
 
@@ -105,6 +119,11 @@ public class GMapsFragment extends Fragment {
         });
 
     }
+
+    private void addCustomMarker(LocationData location) {
+        mMap.addMarker(new MarkerOptions().position(location.getLatLng()).title(location.getTitle()));
+    }
+
     private void getCurrentLocation(){
         if (ActivityCompat.checkSelfPermission(
                 getActivity(), android.Manifest.permission.ACCESS_FINE_LOCATION)!= PackageManager.PERMISSION_GRANTED
@@ -145,7 +164,7 @@ public class GMapsFragment extends Fragment {
                     lng = location.getLongitude();
 
                     LatLng latLng = new LatLng(lat,lng);
-                    mMap.addMarker(new MarkerOptions().position(latLng).title("current location"));
+                  // mMap.addMarker(new MarkerOptions().position(latLng).title("current location"));
                     mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
                     mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng,15));
                 }
@@ -161,5 +180,21 @@ public class GMapsFragment extends Fragment {
                 }
         }
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+    }
+    public class LocationData{
+        private LatLng latLng;
+        private String title;
+
+        public LocationData(LatLng latLng, String title){
+            this.latLng = latLng;
+            this.title = title;
+        }
+
+        public LatLng getLatLng() {
+            return latLng;
+        }
+        public String getTitle(){
+            return title;
+        }
     }
 }

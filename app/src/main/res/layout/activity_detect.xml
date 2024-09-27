@@ -53,22 +53,22 @@
             android:id="@id/imgcont"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:layout_constraintTop_toBottomOf="@id/cons1"
+            android:paddingVertical="10dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            android:paddingVertical="10dp">
+            app:layout_constraintTop_toBottomOf="@id/cons1">
 
             <ImageView
                 android:id="@+id/image"
                 android:layout_width="223dp"
                 android:layout_height="224dp"
+                android:background="@drawable/detectimgborder"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_bias="0.0"
-                android:background="@drawable/detectimgborder"/>
+                app:layout_constraintVertical_bias="0.0" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
         <!--
@@ -93,8 +93,49 @@
                app:layout_constraintTop_toTopOf="parent" />
 
            -->
+
         <LinearLayout
-            android:id="@+id/linearLayout3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/error"
+            android:orientation="vertical"
+            app:layout_constraintBottom_toTopOf="@+id/linearLayoutDiagnosis"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/imgcont"
+            android:visibility="invisible">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="This Photo is not Suitable"
+                android:textColor="#FF0000"
+                />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Please Try Again"
+                android:layout_gravity="center"
+                android:textColor="#FF0000"
+                android:layout_marginTop="5dp"/>
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/btn_error"
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            android:text="Cancel"
+            android:textColor="@color/white"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/error"
+            android:layout_marginTop="400dp"
+            android:visibility="invisible"/>
+
+        <LinearLayout
+            android:id="@+id/linearLayoutDiagnosis"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="50dp"
@@ -123,17 +164,27 @@
                 android:textSize="25sp"
                 android:paddingVertical="5dp"
                 android:paddingHorizontal="10dp"/>
+            <TextView
+                android:id="@+id/secretHealthy"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="You have a Healthy skin. You are Safe"
+                android:textColor="@color/black"
+                android:textSize="20sp"
+                android:paddingVertical="5dp"
+                android:paddingHorizontal="10dp"
+                android:visibility="gone"/>
         </LinearLayout>
 
         <LinearLayout
-            android:id="@+id/linearLayout1"
+            android:id="@+id/linearLayoutCauses"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
             android:orientation="vertical"
-            app:layout_constraintEnd_toEndOf="@+id/linearLayout3"
-            app:layout_constraintStart_toStartOf="@+id/linearLayout3"
-            app:layout_constraintTop_toBottomOf="@+id/linearLayout3">
+            app:layout_constraintEnd_toEndOf="@+id/linearLayoutDiagnosis"
+            app:layout_constraintStart_toStartOf="@+id/linearLayoutDiagnosis"
+            app:layout_constraintTop_toBottomOf="@+id/linearLayoutDiagnosis">
 
             <TextView
                 android:id="@+id/textView5"
@@ -152,21 +203,21 @@
                 android:layout_height="wrap_content"
                 android:text=""
                 android:textColor="@color/black"
-                android:textSize="25dp"
+                android:textSize="15dp"
                 android:paddingVertical="5dp"
                 android:paddingHorizontal="10dp"/>
         </LinearLayout>
 
         <LinearLayout
-            android:id="@+id/linearLayout2"
+            android:id="@+id/linearLayoutSymptoms"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
             android:orientation="vertical"
-            app:layout_constraintEnd_toEndOf="@+id/linearLayout1"
+            app:layout_constraintEnd_toEndOf="@+id/linearLayoutCauses"
             app:layout_constraintHorizontal_bias="1.0"
-            app:layout_constraintStart_toStartOf="@+id/linearLayout1"
-            app:layout_constraintTop_toBottomOf="@+id/linearLayout1">
+            app:layout_constraintStart_toStartOf="@+id/linearLayoutCauses"
+            app:layout_constraintTop_toBottomOf="@+id/linearLayoutCauses">
 
             <TextView
                 android:id="@+id/textView6"
@@ -185,21 +236,21 @@
                 android:layout_height="wrap_content"
                 android:text=""
                 android:textColor="@color/black"
-                android:textSize="25sp"
+                android:textSize="15dp"
                 android:paddingVertical="5dp"
                 android:paddingHorizontal="10dp"/>
         </LinearLayout>
 
         <LinearLayout
-            android:id="@+id/linearLayout4"
+            android:id="@+id/linearLayoutTreatment"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
             android:orientation="vertical"
-            app:layout_constraintEnd_toEndOf="@+id/linearLayout2"
+            app:layout_constraintEnd_toEndOf="@+id/linearLayoutSymptoms"
             app:layout_constraintHorizontal_bias="1.0"
-            app:layout_constraintStart_toStartOf="@+id/linearLayout2"
-            app:layout_constraintTop_toBottomOf="@+id/linearLayout2">
+            app:layout_constraintStart_toStartOf="@+id/linearLayoutSymptoms"
+            app:layout_constraintTop_toBottomOf="@+id/linearLayoutSymptoms">
 
             <TextView
                 android:id="@+id/textView0"
@@ -218,7 +269,7 @@
                 android:layout_height="wrap_content"
                 android:text=""
                 android:textColor="@color/black"
-                android:textSize="25sp"
+                android:textSize="15dp"
                 android:paddingVertical="5dp"
                 android:paddingHorizontal="10dp" />
         </LinearLayout>

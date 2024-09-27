@@ -1,5 +1,6 @@
 package com.example.skindiseasedetector;
 
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
@@ -27,7 +28,7 @@ import java.nio.ByteOrder;
 public class AnonDetectActivity extends BaseActivity {
     ImageView imageView;
     TextView result;
-    int imageSize = 128;
+    int imageSize = 224;
     ActivityAnonDetectBinding binding = null;
 
     @Override
@@ -47,22 +48,27 @@ public class AnonDetectActivity extends BaseActivity {
         fixStatusBar();
         binding.cancel.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) { cancelIntent();
+            public void onClick(View v) {
+                new AlertDialog.Builder(AnonDetectActivity.this)
+                        .setTitle("Cancel")
+                        .setMessage("Are you sure you don't want to save?")
+                        .setPositiveButton("YES",((dialog,which)-> cancelIntent()))
+                        .setNegativeButton("NO",null)
+                        .create()
+                        .show();
             }
         });
 
     }
     private void cancelIntent() {
-        Intent intent = new Intent(this, AnonHomeActivity.class);
-        startActivity(intent);
-        overridePendingTransition(R.anim.slide_in_left,R.anim.slide_out_right);
+        getOnBackPressedDispatcher().onBackPressed();
     }
     private void classifyImage(Bitmap image) {
         try {
             Model model = Model.newInstance(getApplicationContext());
 
             // Creates inputs for reference.
-            TensorBuffer inputFeature0 = TensorBuffer.createFixedSize(new int[]{1, 128, 128, 3}, DataType.FLOAT32);
+            TensorBuffer inputFeature0 = TensorBuffer.createFixedSize(new int[]{1, 224, 224, 3}, DataType.FLOAT32);
             ByteBuffer byteBuffer = ByteBuffer.allocateDirect(4 * imageSize * imageSize * 3);
             byteBuffer.order(ByteOrder.nativeOrder());
 
@@ -95,9 +101,62 @@ public class AnonDetectActivity extends BaseActivity {
                     maxPos = i;
                 }
             }
-            String[] classes = {"Acne", "Eczema","Melanocytic Nevi","Melanoma","Normal Skin","Psoriasis"};
-            result.setText(classes[maxPos]);
+            Float undefined = 0.7f;
+            if (maxConfidence < undefined) {
 
+                binding.error.setVisibility(View.VISIBLE);
+                binding.btnError.setVisibility(View.VISIBLE);
+                binding.btnError.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        getOnBackPressedDispatcher().onBackPressed();
+                    }
+                });
+                binding.linearLayoutDiagnosis.setVisibility(View.INVISIBLE);
+                binding.linearLayoutCauses.setVisibility(View.INVISIBLE);
+                binding.linearLayoutSymptoms.setVisibility(View.INVISIBLE);
+                binding.linearLayoutTreatment.setVisibility(View.INVISIBLE);
+                binding.cancel.setVisibility(View.INVISIBLE);
+            } else {
+
+                String[] classes = {"Acne", "Eczema", "Healthy Skin", "Nail Fungus", "Psoriasis", "Vitiligo", "Warts"};
+                result.setText(classes[maxPos]);
+
+                if (classes[maxPos].equals("Acne")) {
+                    binding.resultCause.setText(R.string.acne_cause);
+                    binding.resultSymptoms.setText(R.string.acne_symptoms);
+                    binding.resultTreatment.setText(R.string.acne_treatment);
+                } else if (classes[maxPos].equals("Eczema")) {
+                    binding.resultCause.setText(R.string.eczema_cause);
+                    binding.resultSymptoms.setText(R.string.eczema_symptoms);
+                    binding.resultTreatment.setText(R.string.eczema_treatment);
+                } else if (classes[maxPos].equals("Healthy Skin")) {
+                    binding.secretHealthy.setVisibility(View.VISIBLE);
+                    binding.linearLayoutCauses.setVisibility(View.INVISIBLE);
+                    binding.linearLayoutSymptoms.setVisibility(View.INVISIBLE);
+                    binding.linearLayoutTreatment.setVisibility(View.INVISIBLE);
+                }else if (classes[maxPos].equals("Nail Fungus")) {
+                    binding.resultCause.setText(R.string.nail_fungus_cause);
+                    binding.resultSymptoms.setText(R.string.nail_fungus_symptoms);
+                    binding.resultTreatment.setText(R.string.nail_fungus_treatment);
+                }else if (classes[maxPos].equals("Psoriasis")) {
+                    binding.resultCause.setText(R.string.psoriasis_cause);
+                    binding.resultSymptoms.setText(R.string.psoriasis_symptoms);
+                    binding.resultTreatment.setText(R.string.psoriasis_treatment);
+                }else if (classes[maxPos].equals("Vitiligo")) {
+                    binding.resultCause.setText(R.string.vitiligo_cause);
+                    binding.resultSymptoms.setText(R.string.vitiligo_symptoms);
+                    binding.resultTreatment.setText(R.string.vitiligo_treatment);
+                }else if (classes[maxPos].equals("Warts")) {
+                    binding.resultCause.setText(R.string.warts_cause);
+                    binding.resultSymptoms.setText(R.string.warts_symptoms);
+                    binding.resultTreatment.setText(R.string.warts_treatment);
+                } else {
+                    binding.resultCause.setText(R.string.failed);
+                    binding.resultSymptoms.setText(R.string.failed);
+                    binding.resultTreatment.setText(R.string.failed);
+                }
+            }
             // Releases model resources if no longer used.
             model.close();
         } catch (IOException e) {

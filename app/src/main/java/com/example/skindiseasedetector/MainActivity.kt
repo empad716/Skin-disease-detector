@@ -23,7 +23,15 @@ class MainActivity : AppCompatActivity() {
         enableEdgeToEdge()
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding?.root)
-
+        val decorView = window.decorView
+        decorView.setOnApplyWindowInsetsListener{v,insets ->
+            val left = insets.systemWindowInsetLeft
+            val top = insets.systemWindowInsetTop
+            val right = insets.systemWindowInsetRight
+            val bottom = insets.systemWindowInsetBottom
+            v.setPadding(left,top, right,bottom)
+            insets.consumeSystemWindowInsets()
+        }
         binding?.button?.setOnClickListener {
             val intent = Intent(this, MainActivity2 ::class.java)
             startActivity(intent)

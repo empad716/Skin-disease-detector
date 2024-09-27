@@ -13,185 +13,247 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="#ADDFDE"
+        android:background="@color/white"
         tools:context=".InfoActivity">
-
-        <ImageButton
-            android:id="@+id/back"
-            android:layout_width="38dp"
-            android:layout_height="34dp"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="8dp"
-            android:background="?android:attr/selectableItemBackground"
-            app:layout_constraintBottom_toTopOf="@+id/image"
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/cons1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/arrow_back" />
-
-
-        <ImageView
-            android:id="@+id/image"
-            android:layout_width="223dp"
-            android:layout_height="224dp"
-            android:layout_marginTop="108dp"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            android:padding="8dp"
+            android:background="@color/PrimaryBlue">
+            <ImageButton
+                android:id="@+id/back"
+                android:layout_width="38dp"
+                android:layout_height="34dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="8dp"
+                android:contentDescription="@string/back"
+                android:tint="@color/white"
+                android:background="?android:attr/selectableItemBackground"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:srcCompat="@drawable/arrow_back"
+                tools:ignore="UseAppTint" />
 
-        <LinearLayout
-            android:id="@+id/linearLayout3"
+            <Button
+                android:id="@+id/delete"
+                android:layout_width="100dp"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="16dp"
+                android:background="?android:attr/selectableItemBackground"
+                android:text="Delete"
+                android:textColor="@color/white"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"/>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@id/imgcont"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="72dp"
-            android:orientation="horizontal"
-            app:layout_constraintEnd_toEndOf="@+id/image"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="@+id/image"
-            app:layout_constraintTop_toBottomOf="@+id/image">
+            android:paddingVertical="10dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/cons1">
+<FrameLayout
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    app:layout_constraintBottom_toBottomOf="parent"
+    app:layout_constraintEnd_toEndOf="parent"
+    app:layout_constraintHorizontal_bias="0.0"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintTop_toTopOf="parent"
+    app:layout_constraintVertical_bias="0.0"
+    android:padding="5dp">
+
+    <ImageView
+        android:id="@+id/image"
+        android:layout_width="223dp"
+        android:layout_height="224dp"
+        android:scaleType="centerCrop"/>
+
+
+</FrameLayout>
+
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <LinearLayout
+            android:id="@+id/linearLayoutDiagnosis"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="50dp"
+            android:orientation="vertical"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/imgcont">
 
             <TextView
                 android:id="@+id/textView4"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Diagnosis: "
-                android:textColor="@color/black"
-                android:textSize="25dp" />
+                android:textColor="@color/white"
+                android:textSize="25sp"
+                android:paddingVertical="5dp"
+                android:paddingHorizontal="10dp"
+                android:background="@color/PrimaryBlue"/>
 
             <TextView
                 android:id="@+id/resultDiagnosis"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text=""
                 android:textColor="@color/black"
-                android:textSize="25dp" />
+                android:textSize="25sp"
+                android:paddingVertical="5dp"
+                android:paddingHorizontal="10dp"/>
+            <TextView
+                android:id="@+id/secretHealthy"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="You have a Healthy skin. You are Safe"
+                android:textColor="@color/black"
+                android:textSize="20sp"
+                android:paddingVertical="5dp"
+                android:paddingHorizontal="10dp"
+                android:visibility="gone"/>
         </LinearLayout>
 
         <LinearLayout
-            android:id="@+id/linearLayout1"
-            android:layout_width="wrap_content"
+            android:id="@+id/linearLayoutCauses"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="96dp"
-            android:orientation="horizontal"
-            app:layout_constraintEnd_toEndOf="@+id/linearLayout3"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="@+id/linearLayout3"
-            app:layout_constraintTop_toBottomOf="@+id/linearLayout3">
+            android:layout_marginTop="10dp"
+            android:orientation="vertical"
+            app:layout_constraintEnd_toEndOf="@+id/linearLayoutDiagnosis"
+            app:layout_constraintStart_toStartOf="@+id/linearLayoutDiagnosis"
+            app:layout_constraintTop_toBottomOf="@+id/linearLayoutDiagnosis">
 
             <TextView
                 android:id="@+id/textView5"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Causes: "
-                android:textColor="@color/black"
-                android:textSize="25dp" />
+                android:textColor="@color/white"
+                android:textSize="25sp"
+                android:background="@color/PrimaryBlue"
+                android:paddingVertical="5dp"
+                android:paddingHorizontal="10dp"/>
 
             <TextView
                 android:id="@+id/resultCause"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text=""
                 android:textColor="@color/black"
-                android:textSize="25dp" />
-
+                android:textSize="15dp"
+                android:paddingVertical="5dp"
+                android:paddingHorizontal="10dp"/>
         </LinearLayout>
 
         <LinearLayout
-            android:id="@+id/linearLayout2"
-            android:layout_width="wrap_content"
+            android:id="@+id/linearLayoutSymptoms"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="124dp"
-            android:orientation="horizontal"
-            app:layout_constraintEnd_toEndOf="@+id/linearLayout1"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="@+id/linearLayout1"
-            app:layout_constraintTop_toBottomOf="@+id/linearLayout1">
+            android:layout_marginTop="10dp"
+            android:orientation="vertical"
+            app:layout_constraintEnd_toEndOf="@+id/linearLayoutCauses"
+            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintStart_toStartOf="@+id/linearLayoutCauses"
+            app:layout_constraintTop_toBottomOf="@+id/linearLayoutCauses">
 
             <TextView
                 android:id="@+id/textView6"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Symptoms: "
-                android:textColor="@color/black"
-                android:textSize="25dp" />
+                android:textColor="@color/white"
+                android:textSize="25sp"
+                android:background="@color/PrimaryBlue"
+                android:paddingVertical="5dp"
+                android:paddingHorizontal="10dp"/>
 
             <TextView
                 android:id="@+id/resultSymptoms"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text=""
                 android:textColor="@color/black"
-                android:textSize="25dp" />
+                android:textSize="15dp"
+                android:paddingVertical="5dp"
+                android:paddingHorizontal="10dp"/>
         </LinearLayout>
 
+
         <LinearLayout
-            android:id="@+id/linearLayout4"
-            android:layout_width="wrap_content"
+            android:id="@+id/linearLayoutTreatment"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="268dp"
-            android:orientation="horizontal"
-            app:layout_constraintEnd_toEndOf="@+id/linearLayout2"
+            android:layout_marginTop="10dp"
+            android:orientation="vertical"
+            app:layout_constraintEnd_toEndOf="@+id/linearLayoutSymptoms"
             app:layout_constraintHorizontal_bias="1.0"
-            app:layout_constraintStart_toStartOf="@+id/linearLayout2"
-            app:layout_constraintTop_toBottomOf="@+id/linearLayout2">
+            app:layout_constraintStart_toStartOf="@+id/linearLayoutSymptoms"
+            app:layout_constraintTop_toBottomOf="@+id/linearLayoutSymptoms">
 
             <TextView
                 android:id="@+id/textView0"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Treatment: "
-                android:textColor="@color/black"
-                android:textSize="25dp" />
+                android:textColor="@color/white"
+                android:textSize="25sp"
+                android:paddingVertical="5dp"
+                android:paddingHorizontal="10dp"
+                android:background="@color/PrimaryBlue"/>
 
             <TextView
                 android:id="@+id/resultTreatment"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text=""
                 android:textColor="@color/black"
-                android:textSize="25dp" />
+                android:textSize="15dp"
+                android:paddingVertical="5dp"
+                android:paddingHorizontal="10dp" />
         </LinearLayout>
-
         <LinearLayout
-            android:id="@+id/linearLayout5"
-            android:layout_width="wrap_content"
+            android:id="@+id/linearLayoutDate"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="148dp"
-            android:orientation="horizontal"
-            app:layout_constraintEnd_toEndOf="@+id/linearLayout4"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="@+id/linearLayout4"
-            app:layout_constraintTop_toBottomOf="@+id/linearLayout4">
+            android:layout_marginTop="10dp"
+            android:orientation="vertical"
+            app:layout_constraintEnd_toEndOf="@+id/linearLayoutTreatment"
+            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintStart_toStartOf="@+id/linearLayoutTreatment"
+            app:layout_constraintTop_toBottomOf="@+id/linearLayoutTreatment">
 
             <TextView
-                android:layout_width="wrap_content"
+                android:id="@+id/textView9"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Date: "
-                android:textColor="@color/black"
-                android:textSize="25dp" />
+                android:textColor="@color/white"
+                android:textSize="25sp"
+                android:paddingVertical="5dp"
+                android:paddingHorizontal="10dp"
+                android:background="@color/PrimaryBlue"/>
 
             <TextView
                 android:id="@+id/resultDate"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text=""
                 android:textColor="@color/black"
-                android:textSize="25dp" />
-
+                android:textSize="15dp"
+                android:paddingVertical="5dp"
+                android:paddingHorizontal="10dp" />
         </LinearLayout>
 
-        <Button
-            android:id="@+id/delete"
-            android:layout_width="100dp"
-            android:layout_height="53dp"
-            android:layout_marginTop="32dp"
-            android:layout_marginEnd="16dp"
-            android:text="Delete"
-            app:layout_constraintBottom_toTopOf="@+id/image"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.0"
-            android:textColor="@color/blue"
-            android:background="?android:attr/selectableItemBackground"/>
+
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>

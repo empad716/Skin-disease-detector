@@ -24,9 +24,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.SkinDiseaseDetector"
         tools:targetApi="31">
-        <activity
-            android:name=".FifthMapsActivity"
-            android:exported="false" />
+
         <!--
              TODO: Before you run your application, you need a Google Maps API key.
 
@@ -40,8 +38,7 @@
         -->
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyCiFHG1H8XznGaQMWev53Gu3Ll7PPeedaI" />
-
+            android:value="@string/google_map_api_key" />
 
         <activity
             android:name=".FourthActivity"

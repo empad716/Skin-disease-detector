@@ -91,7 +91,7 @@ class AnonHomeActivity : BaseActivity() {
                     true
                 }
                 R.id.btn_maps ->{
-                    replaceFragment(MapsFragment())
+                    replaceFragment(AlgoFragment())
                     true
                 }
                 R.id.btn_add ->{

@@ -56,12 +56,13 @@ public class InfoActivity extends BaseActivity {
         String imageUrl = intent.getStringExtra("image");
         long timestamp = intent.getLongExtra("timestamp",0);
         auth= FirebaseAuth.getInstance();
-        
+
         binding.resultDiagnosis.setText(diagnosis);
         binding.resultCause.setText(cause);
         binding.resultSymptoms.setText(symptoms);
         binding.resultTreatment.setText(treatment);
         binding.resultDate.setText(date);
+        
 
 
 
@@ -147,9 +148,7 @@ public class InfoActivity extends BaseActivity {
             }
 
             private void backIntent() {
-                Intent intent1 = new Intent(InfoActivity.this, HomeActivity.class);
-                startActivity(intent1);
-                overridePendingTransition(R.anim.slide_in_left,R.anim.slide_out_right);
+                getOnBackPressedDispatcher().onBackPressed();
             }
         });
 

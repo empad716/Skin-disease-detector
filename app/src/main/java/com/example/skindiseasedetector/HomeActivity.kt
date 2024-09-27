@@ -121,7 +121,7 @@ class HomeActivity : BaseActivity() {
                      true
                  }
                 R.id.btn_maps ->{
-                    replaceFragment(GMapsFragment())
+                    replaceFragment(AlgoFragment())
                     true
                 }
                 R.id.btn_add ->{

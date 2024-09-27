@@ -2,6 +2,7 @@ package com.example.skindiseasedetector;
 
 import android.Manifest;
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -24,6 +25,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.content.res.AppCompatResources;
 import com.example.skindiseasedetector.databinding.ActivityDetectBinding;
 import com.example.skindiseasedetector.ml.Model;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.firebase.Firebase;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
@@ -50,11 +52,11 @@ import java.util.Locale;
 public class DetectActivity extends BaseActivity {
     ImageView imageView;
     TextView result;
-    int imageSize = 128;
+    int imageSize = 224;
     ActivityDetectBinding binding = null;
     FirebaseAuth auth;
     String uid,dateTime,dateTimeData;
-
+    androidx.appcompat.app.AlertDialog ed;
 
     FirebaseDatabase database;
     @Override
@@ -170,18 +172,7 @@ public class DetectActivity extends BaseActivity {
              binding.result.setError("Cannot be empty");
              return;
          }
-         if (cause.isEmpty()){
-             binding.resultCause.setError("Cannot be empty");
-             return;
-         }
-         if (symptoms.isEmpty()){
-             binding.resultSymptoms.setError("Cannot be empty");
-             return;
-         }
-         if (treatment.isEmpty()){
-             binding.resultTreatment.setError("Cannot be empty");
-             return;
-         }
+
          if(auth.getCurrentUser() != null){
              DatabaseReference databaseRef = database.getReference().child("users").child(auth.getCurrentUser().getUid()).child("history");
              String uniqueKey  = databaseRef.push().getKey();
@@ -229,17 +220,17 @@ public class DetectActivity extends BaseActivity {
             Model model = Model.newInstance(getApplicationContext());
 
             // Creates inputs for reference.
-            TensorBuffer inputFeature0 = TensorBuffer.createFixedSize(new int[]{1, 128, 128, 3}, DataType.FLOAT32);
+            TensorBuffer inputFeature0 = TensorBuffer.createFixedSize(new int[]{1, 224, 224, 3}, DataType.FLOAT32);
             ByteBuffer byteBuffer = ByteBuffer.allocateDirect(4 * imageSize * imageSize * 3);
             byteBuffer.order(ByteOrder.nativeOrder());
 
             int[] intValues = new int[imageSize * imageSize];
             image.getPixels(intValues, 0, image.getWidth(), 0, 0, image.getWidth(), image.getHeight());
             int pixel = 0;
-            for(int i = 0; i < imageSize; i ++){
-                for(int j = 0; j < imageSize; j++){
+            for (int i = 0; i < imageSize; i++) {
+                for (int j = 0; j < imageSize; j++) {
                     int val = intValues[pixel++]; // RGB
-                    byteBuffer.putFloat(((val >> 16) & 0xFF) * (1.f /255.f));
+                    byteBuffer.putFloat(((val >> 16) & 0xFF) * (1.f / 255.f));
                     byteBuffer.putFloat(((val >> 8) & 0xFF) * (1.f / 255.f));
                     byteBuffer.putFloat((val & 0xFF) * (1.f / 255.f));
                 }
@@ -261,28 +252,63 @@ public class DetectActivity extends BaseActivity {
                 }
             }
             Float undefined = 0.7f;
-            if (maxConfidence<undefined){
+            if (maxConfidence < undefined) {
+                binding.error.setVisibility(View.VISIBLE);
+                binding.btnError.setVisibility(View.VISIBLE);
+                binding.btnError.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        getOnBackPressedDispatcher().onBackPressed();
+                    }
+                });
+                binding.linearLayoutDiagnosis.setVisibility(View.INVISIBLE);
+                binding.linearLayoutCauses.setVisibility(View.INVISIBLE);
+                binding.linearLayoutSymptoms.setVisibility(View.INVISIBLE);
+                binding.linearLayoutTreatment.setVisibility(View.INVISIBLE);
+                binding.save.setVisibility(View.INVISIBLE);
+                binding.cancel.setVisibility(View.INVISIBLE);
 
-                result.setText("Cannot recognized Please Try Again");
-                binding.resultCause.setText("max Confidence:  "+maxConfidence);
-                binding.resultTreatment.setText("undefined: "+undefined);
-                binding.resultTreatment.setText("Cannot recognized Please Try Again");
-            }else {
-                String[] classes = {"Acne", "Eczema", "Melanocytic Nevi", "Melanoma", "Normal Skin", "Psoriasis"};
-                result.setText(classes[maxPos]);
+            } else {
 
-                if (classes[maxPos].equals("Normal Skin")) {
-                    binding.resultCause.setText(R.string.normal_skin_cause);
-                    binding.resultSymptoms.setText(R.string.normal_skin_symptoms);
-                    binding.resultTreatment.setText(R.string.normal_skin_treatment);
-                } else if (classes[maxPos].equals("Melanoma")) {
-                    binding.resultCause.setText(R.string.melanoma_cause);
-                } else {
-                    binding.resultCause.setText(R.string.failed);
-                    binding.resultSymptoms.setText(R.string.failed);
-                    binding.resultTreatment.setText(R.string.failed);
-                }
+            String[] classes = {"Acne", "Eczema", "Healthy Skin", "Nail Fungus", "Psoriasis", "Vitiligo", "Warts"};
+            result.setText(classes[maxPos]);
+
+            if (classes[maxPos].equals("Acne")) {
+                binding.resultCause.setText(R.string.acne_cause);
+                binding.resultSymptoms.setText(R.string.acne_symptoms);
+                binding.resultTreatment.setText(R.string.acne_treatment);
+            } else if (classes[maxPos].equals("Eczema")) {
+                binding.resultCause.setText(R.string.eczema_cause);
+                binding.resultSymptoms.setText(R.string.eczema_symptoms);
+                binding.resultTreatment.setText(R.string.eczema_treatment);
+            } else if (classes[maxPos].equals("Healthy Skin")) {
+                binding.secretHealthy.setVisibility(View.VISIBLE);
+                binding.linearLayoutCauses.setVisibility(View.INVISIBLE);
+                binding.linearLayoutSymptoms.setVisibility(View.INVISIBLE);
+                binding.linearLayoutTreatment.setVisibility(View.INVISIBLE);
+            }else if (classes[maxPos].equals("Nail Fungus")) {
+                binding.resultCause.setText(R.string.nail_fungus_cause);
+                binding.resultSymptoms.setText(R.string.nail_fungus_symptoms);
+                binding.resultTreatment.setText(R.string.nail_fungus_treatment);
+            }else if (classes[maxPos].equals("Psoriasis")) {
+                binding.resultCause.setText(R.string.psoriasis_cause);
+                binding.resultSymptoms.setText(R.string.psoriasis_symptoms);
+                binding.resultTreatment.setText(R.string.psoriasis_treatment);
+            }else if (classes[maxPos].equals("Vitiligo")) {
+                binding.resultCause.setText(R.string.vitiligo_cause);
+                binding.resultSymptoms.setText(R.string.vitiligo_symptoms);
+                binding.resultTreatment.setText(R.string.vitiligo_treatment);
+            }else if (classes[maxPos].equals("Warts")) {
+                binding.resultCause.setText(R.string.warts_cause);
+                binding.resultSymptoms.setText(R.string.warts_symptoms);
+                binding.resultTreatment.setText(R.string.warts_treatment);
+            } else {
+                binding.resultCause.setText(R.string.failed);
+                binding.resultSymptoms.setText(R.string.failed);
+                binding.resultTreatment.setText(R.string.failed);
             }
+        }
+
             // Releases model resources if no longer used.
             model.close();
         } catch (IOException e) {
